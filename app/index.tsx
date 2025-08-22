@@ -1,12 +1,29 @@
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Easing, Image, StatusBar, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    Dimensions,
+    Easing,
+    Image,
+    ImageBackground,
+    StatusBar,
+    TouchableOpacity,
+    View,
+    useColorScheme
+} from "react-native";
+import { Typography } from "../components/Typography";
+import { useFonts } from "../hooks/useFonts";
 
 export default function LoadingScreen() {
     const [showButtons, setShowButtons] = useState(false);
+    const [bgImage, setBgImage] = useState(
+        require("../assets/images/LoadingBg.png")
+    );
 
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === "dark";
+    const { fontsLoaded } = useFonts();
 
     const backgroundColor = isDarkMode ? "#00142e" : "#ffffff";
     const textColor = isDarkMode ? "#ffffff" : "#004aa9";
@@ -17,6 +34,12 @@ export default function LoadingScreen() {
     const slideAnim = useRef(new Animated.Value(50)).current;
 
     useEffect(() => {
+        // Switch background after 3s
+        const bgTimer = setTimeout(() => {
+            setBgImage(require("../assets/images/LoadedBg.png")); // second background
+        }, 3000);
+
+        // Show buttons after 3s
         const timer = setTimeout(() => {
             setShowButtons(true);
             Animated.parallel([
@@ -34,86 +57,99 @@ export default function LoadingScreen() {
             ]).start();
         }, 3000);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+            clearTimeout(bgTimer);
+        };
     }, []);
 
+    const { width, height } = Dimensions.get("window");
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
-        <View
-            className="flex-1 items-center justify-center relative"
-            style={{ backgroundColor }}
-        >
+        <View className="flex-1" style={{ backgroundColor }}>
             <StatusBar
                 barStyle={isDarkMode ? "light-content" : "dark-content"}
-                backgroundColor={backgroundColor}
+                backgroundColor="transparent"
+                translucent
             />
 
+            {/* Image layer on top of the solid background */}
             <View
-                className="absolute top-0 left-0 w-32 h-32 rounded-full opacity-30 -ml-16 -mt-16"
-                style={{ backgroundColor: buttonBg }}
-            />
-            <View
-                className="absolute bottom-0 right-0 w-32 h-32 rounded-full opacity-30 -mr-16 -mb-16"
-                style={{ backgroundColor: buttonBg }}
-            />
-
-            <Image
-                source={require("../assets/images/goChowLogo.png")}
-                className="w-[230px] h-[120px] mb-4"
-                resizeMode="contain"
-            />
-
-            <Text
-                className="text-xl font-bold mt-2"
-                style={{ color: textColor }}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width,
+                    height,
+                }}
             >
-                Food Delivery
-            </Text>
-
-            {!showButtons ? (
-                <ActivityIndicator
-                    size="large"
-                    color={buttonBg}
-                    className="mt-10"
+                <ImageBackground
+                    source={bgImage}
+                    style={{ flex: 1 }}
+                    resizeMode="cover"
                 />
-            ) : (
-                <Animated.View
-                    style={{
-                        opacity: fadeAnim,
-                        transform: [{ translateY: slideAnim }],
-                    }}
-                    className="flex items-center justify-center w-full absolute bottom-20 left-0 pb-5 gap-3"
-                >
-                    <TouchableOpacity
-                        className="w-[85%] py-5 rounded-full mb-4"
-                        style={{
-                            backgroundColor: buttonBg,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 6,
-                            elevation: 8,
-                        }}
-                        onPress={() => router.push("/auth/Login")}
-                    >
-                        <Text className="text-white text-center font-semibold text-lg">
-                            Login
-                        </Text>
-                    </TouchableOpacity>
+            </View>
 
-                    <TouchableOpacity
-                        className="w-[85%] py-5 rounded-full"
-                        style={{ borderWidth: 1, borderColor }}
-                        onPress={() => router.push("/auth/Signup")}
+            {/* Content Layer */}
+            <View className="absolute top-0 left-0 right-0 bottom-0 justify-center items-center">
+                {/* Logo */}
+                <Image
+                    source={require("../assets/images/goChowLogo.png")}
+                    className="w-[230px] h-[120px]"
+                    resizeMode="contain"
+                />
+                <Typography variant="h2" style={{ color: textColor }} className="mt-2 mb-6">
+                    Food Delivery
+                </Typography>
+
+                {/* Loader or Buttons */}
+                {!showButtons ? (
+                    <ActivityIndicator size="large" color={buttonBg} />
+                ) : (
+                    <Animated.View
+                        style={{
+                            opacity: fadeAnim,
+                            transform: [{ translateY: slideAnim }],
+                        }}
+                        className="items-center w-full absolute bottom-20"
                     >
-                        <Text
-                            className="text-center font-semibold text-lg"
-                            style={{ color: textColor }}
+                        <TouchableOpacity
+                            className="w-[85%] py-5 rounded-full mb-4"
+                            style={{
+                                backgroundColor: buttonBg,
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 4 },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 6,
+                                elevation: 8,
+                            }}
+                            onPress={() => router.push("/auth/Login")}
                         >
-                            Create New Account
-                        </Text>
-                    </TouchableOpacity>
-                </Animated.View>
-            )}
+                            <Typography variant="button" className="text-white text-center">
+                                Login
+                            </Typography>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            className="w-[85%] py-5 rounded-full"
+                            style={{
+                                borderWidth: 1,
+                                borderColor,
+                                backgroundColor: backgroundColor,
+                            }}
+                            onPress={() => router.push("/auth/Signup")}
+                        >
+                            <Typography variant="button" style={{ color: textColor }} className="text-center">
+                                Create New Account
+                            </Typography>
+                        </TouchableOpacity>
+                    </Animated.View>
+                )}
+            </View>
         </View>
     );
 }

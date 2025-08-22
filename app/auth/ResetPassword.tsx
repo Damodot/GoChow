@@ -5,16 +5,18 @@ import {
     Easing,
     SafeAreaView,
     StatusBar,
-    Text,
     TextInput,
     TouchableOpacity,
     useColorScheme,
     View
 } from "react-native";
+import { Typography } from "../../components/Typography";
+import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === "dark";
+    const { fontsLoaded } = useFonts();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -56,6 +58,10 @@ export default function LoginScreen() {
         alert(`Signing in as ${email || "guest"}…`);
     };
 
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
             <StatusBar
@@ -63,34 +69,28 @@ export default function LoginScreen() {
                 backgroundColor={bg}
             />
             <Animated.ScrollView
-            style={{
-                opacity:fadeAnim,
-                transform: [{translateY: slideAnim}]
-            }}
+                style={{
+                    opacity: fadeAnim,
+                    transform: [{ translateY: slideAnim }]
+                }}
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 28 }}
             >
                 {/* Header */}
                 <View className="items-center mt-10 mb-6">
-                    <Text
-                        className="text-4xl font-extrabold"
-                        style={{ color: text }}
-                    >
+                    <Typography variant="h1" style={{ color: text }} className="text-center">
                         Reset Password
-                    </Text>
-                    <Text
-                        className="mt-5 text-sm"
-                        style={{ color: subText, textAlign: "center" }}
-                    >
+                    </Typography>
+                    <Typography variant="body" style={{ color: subText }} className="mt-5 text-sm text-center">
                         Please enter your email to receive the link to create a new password.
-                    </Text>
+                    </Typography>
                 </View>
 
                 {/* Email */}
                 <View className="my-4">
-                    <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+                    <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
                         Email
-                    </Text>
+                    </Typography>
                     <TextInput
                         value={email}
                         onChangeText={setEmail}
@@ -99,11 +99,14 @@ export default function LoginScreen() {
                         keyboardType="email-address"
                         autoCapitalize="none"
                         className="h-12 rounded-2xl px-4"
-                        style={{
-                            backgroundColor: fieldBg,
-                            height: 55,
-                            color: text,
-                        }}
+                        style={[
+                            {
+                                backgroundColor: fieldBg,
+                                height: 55,
+                                color: text,
+                            },
+                            fontsLoaded && { fontFamily: 'Urbanist' }
+                        ]}
                     />
                 </View>
 
@@ -120,9 +123,9 @@ export default function LoginScreen() {
                     }}
                     onPress={() => router.push("/auth/OtpVerifyReset")}
                 >
-                    <Text className="text-white text-center font-semibold text-lg">
+                    <Typography variant="button" className="text-white text-center">
                         Send
-                    </Text>
+                    </Typography>
                 </TouchableOpacity>
             </Animated.ScrollView>
         </SafeAreaView>

@@ -1,5 +1,4 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -7,16 +6,18 @@ import {
   Pressable,
   SafeAreaView,
   StatusBar,
-  Text,
   TextInput,
   TouchableOpacity,
   useColorScheme,
   View
 } from "react-native";
+import { Typography } from "../../components/Typography";
+import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { fontsLoaded } = useFonts();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -60,6 +61,10 @@ export default function LoginScreen() {
     alert(`Signing in as ${email || "guest"}…`);
   };
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
       <StatusBar
@@ -76,24 +81,18 @@ export default function LoginScreen() {
       >
         {/* Header */}
         <View className="items-center mt-10 mb-6">
-          <Text
-            className="text-4xl font-extrabold"
-            style={{ color: text }}
-          >
+          <Typography variant="h1" style={{ color: text }} className="text-center">
             Create New Account
-          </Text>
-          <Text
-            className="mt-3 text-sm"
-            style={{ color: subText, textAlign: "center" }}
-          >
+          </Typography>
+          <Typography variant="body" style={{ color: subText }} className="mt-3 text-sm text-center">
             Create a new account to explore GO CHOWW
-          </Text>
+          </Typography>
         </View>
 
         <View className="my-3">
-          <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Name
-          </Text>
+          </Typography>
           <TextInput
             value={name}
             onChangeText={setName}
@@ -102,18 +101,21 @@ export default function LoginScreen() {
             keyboardType="default"
             autoCapitalize="none"
             className="h-12 rounded-2xl px-4"
-            style={{
-              backgroundColor: fieldBg,
-              height: 55,
-              color: text,
-            }}
+            style={[
+              {
+                backgroundColor: fieldBg,
+                height: 55,
+                color: text,
+              },
+              fontsLoaded && { fontFamily: 'Urbanist' }
+            ]}
           />
         </View>
 
         <View className="mb-3">
-          <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Phone Number
-          </Text>
+          </Typography>
           <TextInput
             value={phoneNum}
             onChangeText={setPhoneNum}
@@ -121,19 +123,22 @@ export default function LoginScreen() {
             placeholderTextColor={subText}
             keyboardType="phone-pad"
             className="h-12 rounded-2xl px-4"
-            style={{
-              backgroundColor: fieldBg,
-              height: 55,
-              color: text,
-            }}
+            style={[
+              {
+                backgroundColor: fieldBg,
+                height: 55,
+                color: text,
+              },
+              fontsLoaded && { fontFamily: 'Urbanist' }
+            ]}
             onSubmitEditing={handleSignIn}
           />
         </View>
 
         <View className="mb-3">
-          <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Email
-          </Text>
+          </Typography>
           <TextInput
             value={email}
             onChangeText={setEmail}
@@ -142,18 +147,21 @@ export default function LoginScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             className="h-12 rounded-2xl px-4"
-            style={{
-              backgroundColor: fieldBg,
-              height: 55,
-              color: text,
-            }}
+            style={[
+              {
+                backgroundColor: fieldBg,
+                height: 55,
+                color: text,
+              },
+              fontsLoaded && { fontFamily: 'Urbanist' }
+            ]}
           />
         </View>
 
         <View className="mb-3">
-          <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Password
-          </Text>
+          </Typography>
           <TextInput
             value={password}
             onChangeText={setPassword}
@@ -162,19 +170,22 @@ export default function LoginScreen() {
             keyboardType="email-address"
             secureTextEntry
             className="h-12 rounded-2xl px-4"
-            style={{
-              backgroundColor: fieldBg,
-              height: 55,
-              color: text,
-            }}
+            style={[
+              {
+                backgroundColor: fieldBg,
+                height: 55,
+                color: text,
+              },
+              fontsLoaded && { fontFamily: 'Urbanist' }
+            ]}
           />
         </View>
 
         {/* Confirm New Password */}
         <View className="mb-3">
-          <Text className="mb-2 ms-3 text-md font-semibold" style={{ color: text }}>
+          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Confirm New Password
-          </Text>
+          </Typography>
           <TextInput
             value={confPassword}
             onChangeText={setConfPassword}
@@ -182,11 +193,14 @@ export default function LoginScreen() {
             placeholderTextColor={subText}
             secureTextEntry
             className="h-12 rounded-2xl px-4"
-            style={{
-              backgroundColor: fieldBg,
-              height: 55,
-              color: text,
-            }}
+            style={[
+              {
+                backgroundColor: fieldBg,
+                height: 55,
+                color: text,
+              },
+              fontsLoaded && { fontFamily: 'Urbanist' }
+            ]}
             onSubmitEditing={handleSignIn}
           />
         </View>
@@ -208,13 +222,15 @@ export default function LoginScreen() {
                 <View className="w-2.5 h-2.5 rounded-full bg-white" />
               ) : null}
             </View>
-            <Text style={{ color: text }}>I agree to the</Text>
+            <Typography variant="body" style={{ color: text }}>
+              I agree to the
+            </Typography>
           </Pressable>
 
           <TouchableOpacity onPress={() => alert("Forgotten Password")}>
-            <Text className="font-semibold" style={{ color: outline }}>
+            <Typography variant="bodyBold" style={{ color: outline }}>
               Terms of Service and Privacy Policy
-            </Text>
+            </Typography>
           </TouchableOpacity>
         </View>
 
@@ -233,18 +249,18 @@ export default function LoginScreen() {
             }}
             onPress={handleSignIn}
           >
-            <Text className="text-white text-center font-semibold text-lg">
+            <Typography variant="button" className="text-white text-center">
               Sign Up
-            </Text>
+            </Typography>
           </TouchableOpacity>
         </View>
 
         {/* Divider */}
         <View className="flex-row items-center mt-3 mb-6">
           <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
-          <Text className="mx-3 text-xs" style={{ color: subText }}>
+          <Typography variant="caption" style={{ color: subText }} className="mx-3 text-xs">
             Or Continue with
-          </Text>
+          </Typography>
           <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
         </View>
 
@@ -305,15 +321,12 @@ export default function LoginScreen() {
 
         {/* Sign up link */}
         <View className="items-center mb-8">
-          <Text style={{ color: subText }}>
+          <Typography variant="body" style={{ color: subText }}>
             Already have an account?{" "}
-            <Text
-              onPress={() => router.push("/auth/Login")}
-              className="font-semibold text-red-600"
-            >
+            <Typography variant="bodyBold" className="text-red-600">
               Sign in
-            </Text>
-          </Text>
+            </Typography>
+          </Typography>
         </View>
       </Animated.ScrollView>
     </SafeAreaView >

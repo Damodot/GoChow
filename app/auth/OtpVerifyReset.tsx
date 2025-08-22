@@ -5,15 +5,18 @@ import {
     Easing,
     SafeAreaView,
     StatusBar,
-    Text,
     TextInput,
     TouchableOpacity,
     View
 } from "react-native";
+import { Typography } from "../../components/Typography";
+import { useFonts } from "../../hooks/useFonts";
+
 
 export default function OTPVerifyReset() {
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === "dark";
+    const { fontsLoaded } = useFonts();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -24,6 +27,8 @@ export default function OTPVerifyReset() {
 
     // Animation on mount
     useEffect(() => {
+        if (!fontsLoaded) return;
+
         Animated.parallel([
             Animated.timing(fadeAnim, {
                 toValue: 1,
@@ -80,6 +85,11 @@ export default function OTPVerifyReset() {
     const btnBg = isDark ? "#1E40AF" : brand;
     const outline = isDark ? "#60A5FA" : brand;
 
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
             <StatusBar
@@ -97,21 +107,15 @@ export default function OTPVerifyReset() {
             >
                 <View className="items-center mt-10 mb-6">
                     {/* Title */}
-                    <Text
-                        className="text-4xl font-extrabold"
-                        style={{ color: text }}
-                    >
+                    <Typography variant="h1" style={{ color: text }} className="text-center mb-2">
                         OTP Code Verification
-                    </Text>
-                    <Text
-                        className="text-sm text-center mt-3 mb-8"
-                        style={{ color: subText }}
-                    >
+                    </Typography>
+                    <Typography variant="body" style={{ color: subText }} className="text-center mb-8">
                         We have sent an OTP code to your email{"\n"}
-                        <Text className="font-semibold" style={{ color: text }}>
+                        <Typography variant="bodyBold" style={{ color: text }}>
                             Stella123@gmail.com
-                        </Text>
-                    </Text>
+                        </Typography>
+                    </Typography>
 
                     {/* OTP Inputs */}
                     <View className="flex-row justify-between w-[80%] mt-3 mb-6">
@@ -123,29 +127,36 @@ export default function OTPVerifyReset() {
                                 onChangeText={(text) => handleChange(text, index)}
                                 keyboardType="number-pad"
                                 maxLength={1}
-                                className="w-16 h-16 text-center rounded-2xl text-2xl font-semibold"
-                                style={{
-                                    backgroundColor: inputBg,
-                                    color: text,
-                                    borderColor: inputBorder,
-                                    borderWidth: isDark ? 1 : 0,
-                                }}
+                                className="w-14 h-14 text-center rounded-2xl text-xl"
+                                style={[
+                                    {
+                                        backgroundColor: inputBg,
+                                        color: text,
+                                        borderColor: inputBorder,
+                                        borderWidth: 1,
+                                        shadowColor: "#000",
+                                        shadowOpacity: 0.1,
+                                        shadowRadius: 4,
+                                        elevation: 2,
+                                    },
+                                    fontsLoaded && { fontFamily: 'Urbanist-SemiBold' }
+                                ]}
                             />
                         ))}
                     </View>
 
                     {/* Timer */}
-                    <Text className="mb-6" style={{ color: subText }}>
+                    <Typography variant="body" style={{ color: subText }} className="mb-6">
                         You can resend code in{" "}
-                        <Text className="font-semibold" style={{ color: outline }}>
+                        <Typography variant="bodyBold" style={{ color: outline }}>
                             {timer}s
-                        </Text>
-                    </Text>
+                        </Typography>
+                    </Typography>
 
                     {/* Confirm Button */}
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        className="w-full py-5 rounded-full mb-3"
+                        className="w-full py-4 rounded-full mb-4"
                         style={{
                             backgroundColor: btnBg,
                             shadowColor: "#000",
@@ -154,22 +165,20 @@ export default function OTPVerifyReset() {
                             shadowRadius: 6,
                             elevation: 8,
                         }}
-                        onPress={() => alert('Confirm Pressed')}
+                        onPress={handleConfirm}
                     >
-                        <Text className="text-white text-center font-semibold text-lg">
+                        <Typography variant="button" className="text-white text-center">
                             Confirm
-                        </Text>
+                        </Typography>
                     </TouchableOpacity>
 
                     {/* Resend Link */}
-                    <Text style={{ color: subText }}>
+                    <Typography variant="body" style={{ color: subText }} className="text-center">
                         Didn't receive an email?{" "}
-                        <Text
-                            className="font-semibold text-red-600"
-                        >
-                            Click here
-                        </Text>
-                    </Text>
+                        <Typography variant="bodyBold" style={{ color: outline }}>
+                            Resend Code
+                        </Typography>
+                    </Typography>
                 </View>
             </Animated.ScrollView>
         </SafeAreaView>
