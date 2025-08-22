@@ -6,11 +6,11 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
-    TouchableOpacity,
     useColorScheme,
     View
 } from "react-native";
 import { Typography } from "../../components/Typography";
+import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
@@ -87,7 +87,7 @@ export default function LoginScreen() {
                 </View>
 
                 {/* Email */}
-                <View className="my-4">
+                <View className="mt-4 mb-8">
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
                         Email
                     </Typography>
@@ -110,23 +110,10 @@ export default function LoginScreen() {
                     />
                 </View>
 
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    className="w-full py-5 rounded-full mt-8 mb-4"
-                    style={{
-                        backgroundColor: btnBg,
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 6,
-                        elevation: 8,
-                    }}
+                <Button
+                    title="Send"
                     onPress={() => router.push("/auth/OtpVerifyReset")}
-                >
-                    <Typography variant="button" className="text-white text-center">
-                        Send
-                    </Typography>
-                </TouchableOpacity>
+                />
             </Animated.ScrollView>
         </SafeAreaView>
     );

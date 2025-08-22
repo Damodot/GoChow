@@ -1,4 +1,5 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -12,6 +13,7 @@ import {
   View
 } from "react-native";
 import { Typography } from "../../components/Typography";
+import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
@@ -227,7 +229,7 @@ export default function LoginScreen() {
             </Typography>
           </Pressable>
 
-          <TouchableOpacity onPress={() => alert("Forgotten Password")}>
+          <TouchableOpacity onPress={() => alert("Terms of Service and Privacy Policy Pressed")}>
             <Typography variant="bodyBold" style={{ color: outline }}>
               Terms of Service and Privacy Policy
             </Typography>
@@ -236,27 +238,14 @@ export default function LoginScreen() {
 
         {/* Sign in */}
         <View>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            className="w-full py-5 rounded-full mb-3"
-            style={{
-              backgroundColor: btnBg,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.25,
-              shadowRadius: 6,
-              elevation: 8,
-            }}
-            onPress={handleSignIn}
-          >
-            <Typography variant="button" className="text-white text-center">
-              Sign Up
-            </Typography>
-          </TouchableOpacity>
+          <Button
+            title="Sign Up"
+            onPress={() => alert("Sign up Confirmed!")}
+          />
         </View>
 
         {/* Divider */}
-        <View className="flex-row items-center mt-3 mb-6">
+        <View className="flex-row items-center mt-6 mb-6">
           <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
           <Typography variant="caption" style={{ color: subText }} className="mx-3 text-xs">
             Or Continue with
@@ -323,9 +312,11 @@ export default function LoginScreen() {
         <View className="items-center mb-8">
           <Typography variant="body" style={{ color: subText }}>
             Already have an account?{" "}
-            <Typography variant="bodyBold" className="text-red-600">
-              Sign in
-            </Typography>
+            <TouchableOpacity onPress={() => router.push("/auth/Login")}>
+              <Typography variant="bodyBold" className="text-red-600">
+                Sign in
+              </Typography>
+            </TouchableOpacity>
           </Typography>
         </View>
       </Animated.ScrollView>

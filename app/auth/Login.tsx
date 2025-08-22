@@ -13,6 +13,7 @@ import {
     View
 } from "react-native";
 import { Typography } from "../../components/Typography";
+import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
@@ -166,23 +167,10 @@ export default function LoginScreen() {
 
                 {/* Sign in */}
                 <View>
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        className="w-full py-5 rounded-full mb-4"
-                        style={{
-                            backgroundColor: btnBg,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 6,
-                            elevation: 8,
-                        }}
-                        onPress={handleSignIn}
-                    >
-                        <Typography variant="button" className="text-white text-center">
-                            Sign In
-                        </Typography>
-                    </TouchableOpacity>
+                    <Button
+                        title="Sign in"
+                        onPress={() => alert("Login Confirmed!")}
+                    />
                 </View>
 
                 {/* Divider */}
@@ -253,12 +241,14 @@ export default function LoginScreen() {
                 <View className="items-center mb-8">
                     <Typography variant="body" style={{ color: subText }}>
                         Don't have an account?{" "}
-                        <Typography variant="bodyBold" className="text-red-600">
-                            Sign up
-                        </Typography>
+                        <TouchableOpacity onPress={() => router.push("/auth/Signup")}>
+                            <Typography variant="bodyBold" className="text-red-600">
+                                Sign up
+                            </Typography>
+                        </TouchableOpacity>
                     </Typography>
                 </View>
             </Animated.ScrollView>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }

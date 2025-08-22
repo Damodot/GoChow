@@ -6,10 +6,11 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
-    TouchableOpacity,
     View
 } from "react-native";
+import CustomModal from "../../components/CustomModal";
 import { Typography } from "../../components/Typography";
+import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
 
@@ -24,6 +25,8 @@ export default function OTPVerifyReset() {
     const [otp, setOtp] = useState(["", "", "", ""]);
     const [timer, setTimer] = useState(60);
     const inputs = useRef<Array<TextInput | null>>([]);
+    const [errorVisible, setErrorVisible] = useState(false);
+
 
     // Animation on mount
     useEffect(() => {
@@ -69,11 +72,7 @@ export default function OTPVerifyReset() {
 
     const handleConfirm = () => {
         const code = otp.join("");
-        if (code.length === 4) {
-            alert("OTP Entered: " + code);
-        } else {
-            alert("Please enter full OTP");
-        }
+        setErrorVisible(true)
     };
 
     const brand = "#004aa9";
@@ -127,17 +126,13 @@ export default function OTPVerifyReset() {
                                 onChangeText={(text) => handleChange(text, index)}
                                 keyboardType="number-pad"
                                 maxLength={1}
-                                className="w-14 h-14 text-center rounded-2xl text-xl"
+                                className="w-16 h-16 text-center rounded-2xl text-3xl"
                                 style={[
                                     {
                                         backgroundColor: inputBg,
                                         color: text,
                                         borderColor: inputBorder,
-                                        borderWidth: 1,
-                                        shadowColor: "#000",
-                                        shadowOpacity: 0.1,
-                                        shadowRadius: 4,
-                                        elevation: 2,
+                                        borderWidth: isDark ? 1 : 0
                                     },
                                     fontsLoaded && { fontFamily: 'Urbanist-SemiBold' }
                                 ]}
@@ -154,26 +149,13 @@ export default function OTPVerifyReset() {
                     </Typography>
 
                     {/* Confirm Button */}
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        className="w-full py-4 rounded-full mb-4"
-                        style={{
-                            backgroundColor: btnBg,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 6,
-                            elevation: 8,
-                        }}
+                    <Button
+                        title="Confirm"
                         onPress={handleConfirm}
-                    >
-                        <Typography variant="button" className="text-white text-center">
-                            Confirm
-                        </Typography>
-                    </TouchableOpacity>
+                    />
 
                     {/* Resend Link */}
-                    <Typography variant="body" style={{ color: subText }} className="text-center">
+                    <Typography variant="body" style={{ color: subText }} className="text-center mt-3">
                         Didn't receive an email?{" "}
                         <Typography variant="bodyBold" style={{ color: outline }}>
                             Resend Code
@@ -181,6 +163,12 @@ export default function OTPVerifyReset() {
                     </Typography>
                 </View>
             </Animated.ScrollView>
+            <CustomModal
+                visible={errorVisible}
+                onClose={() => setErrorVisible(false)}
+                title="Incorrect code entered"
+                message="Please check the code and try again"
+            />
         </SafeAreaView>
     );
 }

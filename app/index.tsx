@@ -102,7 +102,7 @@ export default function LoadingScreen() {
                     className="w-[230px] h-[120px]"
                     resizeMode="contain"
                 />
-                <Typography variant="h2" style={{ color: textColor }} className="mt-2 mb-6">
+                <Typography variant="h3" style={{ color: textColor }} className="mt-2 mb-6">
                     Food Delivery
                 </Typography>
 
