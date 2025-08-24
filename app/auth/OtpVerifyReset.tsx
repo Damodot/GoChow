@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useColorScheme } from "nativewind";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -72,7 +73,11 @@ export default function OTPVerifyReset() {
 
     const handleConfirm = () => {
         const code = otp.join("");
-        setErrorVisible(true)
+        if (code.length !== 4 || !code.length) {
+            setErrorVisible(true)
+            return
+        }
+        router.push('/auth/CreateNewPassword')
     };
 
     const brand = "#004aa9";
@@ -155,9 +160,9 @@ export default function OTPVerifyReset() {
                     />
 
                     {/* Resend Link */}
-                    <Typography variant="body" style={{ color: subText }} className="text-center mt-3">
+                    <Typography variant="body" style={{ color: subText }} className="text-center mt-6">
                         Didn't receive an email?{" "}
-                        <Typography variant="bodyBold" style={{ color: outline }}>
+                        <Typography variant="bodyBold" className="text-red-600">
                             Resend Code
                         </Typography>
                     </Typography>

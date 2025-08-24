@@ -1,6 +1,4 @@
 import CustomAlert from "@/components/CustomAlert";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
@@ -9,7 +7,6 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
-    TouchableOpacity,
     useColorScheme,
     View
 } from "react-native";
@@ -17,7 +14,7 @@ import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
-export default function LoginScreen() {
+export default function CreateNewPassword() {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === "dark";
     const { fontsLoaded } = useFonts();
@@ -53,8 +50,8 @@ export default function LoginScreen() {
     const outline = isDark ? "#60A5FA" : brand;
     const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confNewPassword, setConfNewPassword] = useState("");
     const [remember, setRemember] = useState(true);
 
 
@@ -70,7 +67,7 @@ export default function LoginScreen() {
 
 
     const handleSignIn = () => {
-        if (!email || !password) {
+        if (newPassword !== confNewPassword) {
             showToast('error', 'All fields are mandatory')
             return
         }
@@ -101,24 +98,23 @@ export default function LoginScreen() {
                 {/* Header */}
                 <View className="items-center mt-10 mb-6">
                     <Typography variant="h1" style={{ color: text }} className="text-center">
-                        Login
+                        Create new Password
                     </Typography>
                     <Typography variant="body" style={{ color: subText }} className="mt-5 text-sm text-center">
-                        Fill in the following details to sign in
+                        You can now create a new password
                     </Typography>
                 </View>
 
-                {/* Email */}
                 <View className="my-4">
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
-                        Email
+                        New Password
                     </Typography>
                     <TextInput
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholder="Enter email"
+                        value={newPassword}
+                        onChangeText={setNewPassword}
+                        placeholder="Enter new password"
                         placeholderTextColor={subText}
-                        keyboardType="email-address"
+                        secureTextEntry
                         autoCapitalize="none"
                         className="h-12 rounded-2xl px-4"
                         style={[
@@ -135,12 +131,12 @@ export default function LoginScreen() {
                 {/* Password */}
                 <View className="mb-3">
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
-                        Password
+                        Confirm New Password
                     </Typography>
                     <TextInput
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Enter Password"
+                        value={confNewPassword}
+                        onChangeText={setConfNewPassword}
+                        placeholder="Confirm new password"
                         placeholderTextColor={subText}
                         secureTextEntry
                         className="h-12 rounded-2xl px-4"
@@ -177,96 +173,14 @@ export default function LoginScreen() {
                             Remember Me
                         </Typography>
                     </Pressable>
-
-                    <TouchableOpacity onPress={() => router.push("/auth/ResetPassword")}>
-                        <Typography variant="bodyBold" style={{ color: outline }}>
-                            Forgotten Password?
-                        </Typography>
-                    </TouchableOpacity>
                 </View>
 
                 {/* Sign in */}
                 <View>
                     <Button
-                        title="Sign in"
+                        title="Next"
                         onPress={handleSignIn}
                     />
-                </View>
-
-                {/* Divider */}
-                <View className="flex-row items-center mt-6 mb-12">
-                    <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
-                    <Typography variant="caption" style={{ color: subText }} className="mx-3 text-xs">
-                        Or Continue with
-                    </Typography>
-                    <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
-                </View>
-
-                {/* Social buttons */}
-                <View
-                    className="flex-row items-center justify-center gap-10 mb-8">
-                    <TouchableOpacity
-                        className="w-14 h-14 rounded-2xl items-center justify-center"
-                        style={{
-                            backgroundColor: isDark ? "#111827" : "#ffffff",
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 3 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 6,
-                            elevation: 5,
-                            borderWidth: isDark ? 1 : 0,
-                            borderColor: fieldBorder,
-                        }}
-                        onPress={() => alert("Continue with Google")}
-                    >
-                        <AntDesign name="google" size={22} color={outline} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        className="w-14 h-14 rounded-2xl items-center justify-center"
-                        style={{
-                            backgroundColor: isDark ? "#111827" : "#ffffff",
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 3 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 6,
-                            elevation: 5,
-                            borderWidth: isDark ? 1 : 0,
-                            borderColor: fieldBorder,
-                        }}
-                        onPress={() => alert("Continue with Apple")}
-                    >
-                        <FontAwesome name="apple" size={24} color={appleLogo} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        className="w-14 h-14 rounded-2xl items-center justify-center"
-                        style={{
-                            backgroundColor: isDark ? "#111827" : "#ffffff",
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 3 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 6,
-                            elevation: 5,
-                            borderWidth: isDark ? 1 : 0,
-                            borderColor: fieldBorder,
-                        }}
-                        onPress={() => alert("Continue with Facebook")}
-                    >
-                        <FontAwesome name="facebook" size={22} color={outline} />
-                    </TouchableOpacity>
-                </View>
-
-                {/* Sign up link */}
-                <View className="items-center mb-8">
-                    <Typography variant="body" style={{ color: subText }}>
-                        Don't have an account?{" "}
-                        <TouchableOpacity onPress={() => router.push("/auth/Signup")}>
-                            <Typography variant="bodyBold" className="text-red-600">
-                                Sign up
-                            </Typography>
-                        </TouchableOpacity>
-                    </Typography>
                 </View>
             </Animated.ScrollView>
             <CustomAlert

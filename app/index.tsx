@@ -13,6 +13,7 @@ import {
     useColorScheme
 } from "react-native";
 import { Typography } from "../components/Typography";
+import Button from "../components/ui/Button";
 import { useFonts } from "../hooks/useFonts";
 
 export default function LoadingScreen() {
@@ -117,22 +118,11 @@ export default function LoadingScreen() {
                         }}
                         className="items-center w-full absolute bottom-20"
                     >
-                        <TouchableOpacity
-                            className="w-[85%] py-5 rounded-full mb-4"
-                            style={{
-                                backgroundColor: buttonBg,
-                                shadowColor: "#000",
-                                shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 6,
-                                elevation: 8,
-                            }}
+                        <Button
+                            title="Login"
                             onPress={() => router.push("/auth/Login")}
-                        >
-                            <Typography variant="button" className="text-white text-center">
-                                Login
-                            </Typography>
-                        </TouchableOpacity>
+                            style={{ width: "85%", marginBottom: 15 }}
+                        />
 
                         <TouchableOpacity
                             className="w-[85%] py-5 rounded-full"

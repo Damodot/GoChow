@@ -13,8 +13,11 @@ export default function RootLayout() {
     <FontProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="auth/signup" />
-        {/* <Stack.Screen name="login" /> */}
+        <Stack.Screen name="auth/Login" />
+        <Stack.Screen name="auth/Signup" />
+        <Stack.Screen name="auth/OtpVerifyReset" />
+        <Stack.Screen name="auth/ResetPassword" />
+        <Stack.Screen name="auth/CreateNewPassword" />
       </Stack>
     </FontProvider>
   );

@@ -1,3 +1,4 @@
+import CustomAlert from "@/components/CustomAlert";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -59,8 +60,26 @@ export default function LoginScreen() {
   const [confPassword, setConfPassword] = useState("");
   const [termsAgreement, setTermsAgreement] = useState(true);
 
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
+  const [toastMsg, setToastMsg] = useState('');
+
+  const showToast = (k: typeof toastKind, m: string) => {
+    setToastKind(k);
+    setToastMsg(m);
+    setToastVisible(true);
+  };
+
   const handleSignIn = () => {
-    alert(`Signing in as ${email || "guest"}…`);
+    if (!name || !phoneNum || !email || !password) {
+      showToast('error', 'All fields are mandatory')
+      return
+    }
+    if (password !== confPassword) {
+      showToast('error', 'Passwords do not match')
+      return
+    }
+    showToast('success', 'User created succcesfully')
   };
 
   if (!fontsLoaded) {
@@ -240,7 +259,7 @@ export default function LoginScreen() {
         <View>
           <Button
             title="Sign Up"
-            onPress={() => alert("Sign up Confirmed!")}
+            onPress={handleSignIn}
           />
         </View>
 
@@ -320,6 +339,14 @@ export default function LoginScreen() {
           </Typography>
         </View>
       </Animated.ScrollView>
+      <CustomAlert
+        visible={toastVisible}
+        type={toastKind}
+        message={toastMsg}
+        onClose={() => {
+          setToastVisible(false);
+        }}
+      />
     </SafeAreaView >
   );
 }
