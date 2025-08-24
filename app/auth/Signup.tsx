@@ -1,5 +1,5 @@
 import CustomAlert from "@/components/CustomAlert";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +17,7 @@ import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
 import { useFonts } from "../../hooks/useFonts";
 
-export default function LoginScreen() {
+export default function Signup() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { fontsLoaded } = useFonts();
@@ -52,6 +52,7 @@ export default function LoginScreen() {
   const btnBg = isDark ? "#1E40AF" : brand;
   const outline = isDark ? "#60A5FA" : brand;
   const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
+  const iconColor = isDark ? "#9ca3af" : "#6b7280";
 
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
@@ -59,6 +60,8 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   const [termsAgreement, setTermsAgreement] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfPassword, setShowConfPassword] = useState(false);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
@@ -79,7 +82,7 @@ export default function LoginScreen() {
       showToast('error', 'Passwords do not match')
       return
     }
-    showToast('success', 'User created succcesfully')
+    showToast('success', 'User created successfully')
   };
 
   if (!fontsLoaded) {
@@ -183,23 +186,34 @@ export default function LoginScreen() {
           <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Password
           </Typography>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Enter Password"
-            placeholderTextColor={subText}
-            keyboardType="email-address"
-            secureTextEntry
-            className="h-12 rounded-2xl px-4"
-            style={[
-              {
-                backgroundColor: fieldBg,
-                height: 55,
-                color: text,
-              },
-              fontsLoaded && { fontFamily: 'Urbanist' }
-            ]}
-          />
+          <View className="flex-row items-center">
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter Password"
+              placeholderTextColor={subText}
+              secureTextEntry={!showPassword}
+              className="flex-1 h-12 rounded-2xl px-4"
+              style={[
+                {
+                  backgroundColor: fieldBg,
+                  height: 55,
+                  color: text,
+                },
+                fontsLoaded && { fontFamily: 'Urbanist' }
+              ]}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              className="absolute right-4"
+            >
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={20}
+                color={iconColor}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Confirm New Password */}
@@ -207,23 +221,35 @@ export default function LoginScreen() {
           <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
             Confirm New Password
           </Typography>
-          <TextInput
-            value={confPassword}
-            onChangeText={setConfPassword}
-            placeholder="Enter Password"
-            placeholderTextColor={subText}
-            secureTextEntry
-            className="h-12 rounded-2xl px-4"
-            style={[
-              {
-                backgroundColor: fieldBg,
-                height: 55,
-                color: text,
-              },
-              fontsLoaded && { fontFamily: 'Urbanist' }
-            ]}
-            onSubmitEditing={handleSignIn}
-          />
+          <View className="flex-row items-center">
+            <TextInput
+              value={confPassword}
+              onChangeText={setConfPassword}
+              placeholder="Enter Password"
+              placeholderTextColor={subText}
+              secureTextEntry={!showConfPassword}
+              className="flex-1 h-12 rounded-2xl px-4"
+              style={[
+                {
+                  backgroundColor: fieldBg,
+                  height: 55,
+                  color: text,
+                },
+                fontsLoaded && { fontFamily: 'Urbanist' }
+              ]}
+              onSubmitEditing={handleSignIn}
+            />
+            <TouchableOpacity
+              onPress={() => setShowConfPassword(!showConfPassword)}
+              className="absolute right-4"
+            >
+              <Ionicons
+                name={showConfPassword ? "eye-off" : "eye"}
+                size={20}
+                color={iconColor}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="flex-row items-center mt-3 mb-6">
@@ -328,15 +354,17 @@ export default function LoginScreen() {
         </View>
 
         {/* Sign up link */}
-        <View className="items-center mb-8">
-          <Typography variant="body" style={{ color: subText }}>
-            Already have an account?{" "}
+        <View className="flex items-center justify-center mb-8">
+          <View className="flex-row items-center">
+            <Typography variant="body" style={{ color: subText }} className="text-center">
+              Already have an account? 
+            </Typography>
             <TouchableOpacity onPress={() => router.push("/auth/Login")}>
-              <Typography variant="bodyBold" className="text-red-600">
-                Sign in
+              <Typography variant="bodyBold" className="text-red-600 text-center">
+                {' '}Sign in
               </Typography>
             </TouchableOpacity>
-          </Typography>
+          </View>
         </View>
       </Animated.ScrollView>
       <CustomAlert

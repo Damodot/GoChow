@@ -1,4 +1,5 @@
 import CustomAlert from "@/components/CustomAlert";
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
@@ -7,6 +8,7 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
+    TouchableOpacity,
     useColorScheme,
     View
 } from "react-native";
@@ -48,12 +50,13 @@ export default function CreateNewPassword() {
     const divider = isDark ? "#334155" : "#e5e7eb";
     const btnBg = isDark ? "#1E40AF" : brand;
     const outline = isDark ? "#60A5FA" : brand;
-    const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
+    const iconColor = isDark ? "#9ca3af" : "#6b7280";
 
     const [newPassword, setNewPassword] = useState("");
     const [confNewPassword, setConfNewPassword] = useState("");
     const [remember, setRemember] = useState(true);
-
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfPassword, setShowConfPassword] = useState(false);
 
     const [toastVisible, setToastVisible] = useState(false);
     const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
@@ -65,13 +68,18 @@ export default function CreateNewPassword() {
         setToastVisible(true);
     };
 
-
     const handleSignIn = () => {
-        if (newPassword !== confNewPassword) {
-            showToast('error', 'All fields are mandatory')
-            return
+        if (!newPassword || !confNewPassword) {
+            showToast('error', 'All fields are mandatory');
+            return;
         }
-        showToast('success', 'User signed in successfully')
+
+        if (newPassword !== confNewPassword) {
+            showToast('error', 'Passwords do not match');
+            return;
+        }
+
+        showToast('success', 'Password updated successfully');
         setTimeout(() => {
             // router.push()
         }, 2000);
@@ -109,47 +117,71 @@ export default function CreateNewPassword() {
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
                         New Password
                     </Typography>
-                    <TextInput
-                        value={newPassword}
-                        onChangeText={setNewPassword}
-                        placeholder="Enter new password"
-                        placeholderTextColor={subText}
-                        secureTextEntry
-                        autoCapitalize="none"
-                        className="h-12 rounded-2xl px-4"
-                        style={[
-                            {
-                                backgroundColor: fieldBg,
-                                height: 55,
-                                color: text,
-                            },
-                            fontsLoaded && { fontFamily: 'Urbanist' }
-                        ]}
-                    />
+                    <View className="flex-row items-center">
+                        <TextInput
+                            value={newPassword}
+                            onChangeText={setNewPassword}
+                            placeholder="Enter new password"
+                            placeholderTextColor={subText}
+                            secureTextEntry={!showNewPassword}
+                            autoCapitalize="none"
+                            className="flex-1 h-12 rounded-2xl px-4"
+                            style={[
+                                {
+                                    backgroundColor: fieldBg,
+                                    height: 55,
+                                    color: text,
+                                },
+                                fontsLoaded && { fontFamily: 'Urbanist' }
+                            ]}
+                        />
+                        <TouchableOpacity
+                            onPress={() => setShowNewPassword(!showNewPassword)}
+                            className="absolute right-4"
+                        >
+                            <Ionicons
+                                name={showNewPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color={iconColor}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
-                {/* Password */}
+                {/* Confirm New Password */}
                 <View className="mb-3">
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
                         Confirm New Password
                     </Typography>
-                    <TextInput
-                        value={confNewPassword}
-                        onChangeText={setConfNewPassword}
-                        placeholder="Confirm new password"
-                        placeholderTextColor={subText}
-                        secureTextEntry
-                        className="h-12 rounded-2xl px-4"
-                        style={[
-                            {
-                                backgroundColor: fieldBg,
-                                height: 55,
-                                color: text,
-                            },
-                            fontsLoaded && { fontFamily: 'Urbanist' }
-                        ]}
-                        onSubmitEditing={handleSignIn}
-                    />
+                    <View className="flex-row items-center">
+                        <TextInput
+                            value={confNewPassword}
+                            onChangeText={setConfNewPassword}
+                            placeholder="Confirm new password"
+                            placeholderTextColor={subText}
+                            secureTextEntry={!showConfPassword}
+                            className="flex-1 h-12 rounded-2xl px-4"
+                            style={[
+                                {
+                                    backgroundColor: fieldBg,
+                                    height: 55,
+                                    color: text,
+                                },
+                                fontsLoaded && { fontFamily: 'Urbanist' }
+                            ]}
+                            onSubmitEditing={handleSignIn}
+                        />
+                        <TouchableOpacity
+                            onPress={() => setShowConfPassword(!showConfPassword)}
+                            className="absolute right-4"
+                        >
+                            <Ionicons
+                                name={showConfPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color={iconColor}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View className="flex-row items-center justify-between mt-6 mb-12">
@@ -191,6 +223,6 @@ export default function CreateNewPassword() {
                     setToastVisible(false);
                 }}
             />
-        </SafeAreaView >
+        </SafeAreaView>
     );
 }

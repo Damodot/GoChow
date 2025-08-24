@@ -64,20 +64,35 @@ export default function OTPVerifyReset() {
             newOtp[index] = text;
             setOtp(newOtp);
 
-            // Move to next input automatically
+            // Move to next input automatically when typing
             if (text !== "" && index < 3) {
                 inputs.current[index + 1]?.focus();
+            }
+
+            // Move to previous input automatically when deleting
+            if (text === "" && index > 0) {
+                inputs.current[index - 1]?.focus();
+            }
+
+            // Auto-submit when all 4 digits are filled
+            const code = newOtp.join("");
+            const correctCode = '1234';
+            if (code.length === 4 && code === correctCode) {
+                router.push('/auth/CreateNewPassword');
+            } else if (code.length === 4) {
+                setErrorVisible(true);
             }
         }
     };
 
     const handleConfirm = () => {
         const code = otp.join("");
-        if (code.length !== 4 || !code.length) {
-            setErrorVisible(true)
-            return
+        const correctCode = '1234';
+        if (code.length !== 4 || !code.length || code !== correctCode) {
+            setErrorVisible(true);
+            return;
         }
-        router.push('/auth/CreateNewPassword')
+        router.push('/auth/CreateNewPassword');
     };
 
     const brand = "#004aa9";

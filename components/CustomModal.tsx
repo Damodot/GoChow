@@ -7,11 +7,11 @@ import {
     Easing,
     Modal,
     StyleSheet,
-    TouchableOpacity,
-    View,
+    View
 } from "react-native";
 import { useFonts } from "../hooks/useFonts";
 import { Typography } from "./Typography";
+import Button from "./ui/Button";
 
 const { width } = Dimensions.get("window");
 
@@ -107,23 +107,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
                     </Typography>
 
                     {/* Action Button */}
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        className="w-full py-5 rounded-full absolute bottom-12"
-                        style={{
-                            backgroundColor: btnBg,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 6,
-                            elevation: 8,
-                        }}
+                    <Button
+                        title={buttonText}
                         onPress={onClose}
-                    >
-                        <Typography variant="button" className="text-white text-center">
-                            {buttonText}
-                        </Typography>
-                    </TouchableOpacity>
+                    />
                 </Animated.View>
             </View>
         </Modal>

@@ -1,5 +1,5 @@
 import CustomAlert from "@/components/CustomAlert";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -52,11 +52,12 @@ export default function LoginScreen() {
     const btnBg = isDark ? "#1E40AF" : brand;
     const outline = isDark ? "#60A5FA" : brand;
     const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
+    const iconColor = isDark ? "#9ca3af" : "#6b7280";
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(true);
-
+    const [showPassword, setShowPassword] = useState(false);
 
     const [toastVisible, setToastVisible] = useState(false);
     const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
@@ -68,7 +69,6 @@ export default function LoginScreen() {
         setToastVisible(true);
     };
 
-
     const handleSignIn = () => {
         if (!email || !password) {
             showToast('error', 'All fields are mandatory')
@@ -76,7 +76,7 @@ export default function LoginScreen() {
         }
         showToast('success', 'User signed in successfully')
         setTimeout(() => {
-            // router.push()
+            router.push('/Onboarding/OnboardingScreen')
         }, 2000);
     };
 
@@ -137,23 +137,35 @@ export default function LoginScreen() {
                     <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
                         Password
                     </Typography>
-                    <TextInput
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Enter Password"
-                        placeholderTextColor={subText}
-                        secureTextEntry
-                        className="h-12 rounded-2xl px-4"
-                        style={[
-                            {
-                                backgroundColor: fieldBg,
-                                height: 55,
-                                color: text,
-                            },
-                            fontsLoaded && { fontFamily: 'Urbanist' }
-                        ]}
-                        onSubmitEditing={handleSignIn}
-                    />
+                    <View className="flex-row items-center">
+                        <TextInput
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholder="Enter Password"
+                            placeholderTextColor={subText}
+                            secureTextEntry={!showPassword}
+                            className="flex-1 h-12 rounded-2xl px-4"
+                            style={[
+                                {
+                                    backgroundColor: fieldBg,
+                                    height: 55,
+                                    color: text,
+                                },
+                                fontsLoaded && { fontFamily: 'Urbanist' }
+                            ]}
+                            onSubmitEditing={handleSignIn}
+                        />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword(!showPassword)}
+                            className="absolute right-4"
+                        >
+                            <Ionicons
+                                name={showPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color={iconColor}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View className="flex-row items-center justify-between mt-6 mb-12">
@@ -258,15 +270,17 @@ export default function LoginScreen() {
                 </View>
 
                 {/* Sign up link */}
-                <View className="items-center mb-8">
-                    <Typography variant="body" style={{ color: subText }}>
-                        Don't have an account?{" "}
+                <View className="flex items-center justify-center mb-8">
+                    <View className="flex-row items-center">
+                        <Typography variant="body" style={{ color: subText }} className="text-center">
+                            Don't have an account?
+                        </Typography>
                         <TouchableOpacity onPress={() => router.push("/auth/Signup")}>
-                            <Typography variant="bodyBold" className="text-red-600">
-                                Sign up
+                            <Typography variant="bodyBold" className="text-red-600 text-center">
+                                {' '}Sign up
                             </Typography>
                         </TouchableOpacity>
-                    </Typography>
+                    </View>
                 </View>
             </Animated.ScrollView>
             <CustomAlert
