@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="8.5in" height="11in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 8500 11000"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil1 {fill:none}
+    .fil0 {fill:#FEFEFE}
+   ]]>
+  </style>
+   <clipPath id="id0">
+    <path d="M7194.5 3727.15l0 2944.5 -5889 0 0 -2944.5 5889 0z"/>
+   </clipPath>
+     <clipPath id="id1">
+      <path d="M7194.5 6482.11l-5889 -6.39 0 -2748.57 5889 0 0 2754.96z"/>
+     </clipPath>
+     <clipPath id="id2">
+      <path d="M7194.5 3727.15l0 2944.5 -5889 0 0 -2944.5 5889 0z"/>
+     </clipPath>
+ </defs>
+ <g id="Layer_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g>
+  </g>
+  <g style="clip-path:url(#id0)">
+   <g id="_2318718679840">
+    <g>
+    </g>
+    <g style="clip-path:url(#id1)">
+     <image x="1055.58" y="965.51" width="6389.34" height="5516.87" xlink:href="curvedTabElementlight_Images\curvedTabElementlight_ImgID1.png"/>
+    </g>
+    <g style="clip-path:url(#id2)">
+    </g>
+    <path class="fil0" d="M7195.14 3736.8l-1.14 0.61c-312.68,6.5 -623.8,162.22 -863.08,467.21l-7.78 4.21 -1178.54 1536.03c-245.85,320.42 -569.95,480.55 -894.02,480.39 -324.07,0.16 -648.18,-159.98 -894.02,-480.39l-1178.54 -1536.03 -7.78 -4.21c-239.28,-304.99 -550.41,-460.71 -863.08,-467.21l-1.14 -0.61c256.52,-5.02 512.06,-110.43 727.8,-316.31l1322.75 -1723.97c226.49,-295.19 519.39,-454.25 817.5,-477.33l1.82 -0.14c7.85,-0.6 15.7,-1.09 23.54,-1.5l6.52 -0.32c6.35,-0.28 12.71,-0.51 19.06,-0.67 3.54,-0.09 7.08,-0.16 10.63,-0.22 4.98,-0.07 9.97,-0.11 14.95,-0.11 4.98,0 9.96,0.04 14.95,0.11 3.54,0.06 7.08,0.13 10.63,0.22 6.35,0.17 12.71,0.39 19.06,0.67l6.52 0.32c7.85,0.41 15.7,0.9 23.54,1.5l1.82 0.14c298.11,23.09 591.01,182.14 817.5,477.33l1322.75 1723.97c215.74,205.88 471.28,311.29 727.8,316.31z"/>
+   </g>
+  </g>
+  <polygon class="fil1" points="7194.5,3727.15 7194.5,6671.65 1305.5,6671.65 1305.5,3727.15 "/>
+ </g>
+</svg>

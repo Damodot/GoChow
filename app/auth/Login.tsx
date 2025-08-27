@@ -75,9 +75,9 @@ export default function LoginScreen() {
             return
         }
         showToast('success', 'User signed in successfully')
-        setTimeout(() => {
-            router.push('/Onboarding/OnboardingScreen')
-        }, 2000);
+        setTimeout(async () => {
+            router.replace('/dashboard')
+        }, 3000);
     };
 
     if (!fontsLoaded) {
@@ -275,7 +275,7 @@ export default function LoginScreen() {
                         <Typography variant="body" style={{ color: subText }} className="text-center">
                             Don't have an account?
                         </Typography>
-                        <TouchableOpacity onPress={() => router.push("/auth/Signup")}>
+                        <TouchableOpacity onPress={() => router.replace("/auth/Signup")}>
                             <Typography variant="bodyBold" className="text-red-600 text-center">
                                 {' '}Sign up
                             </Typography>

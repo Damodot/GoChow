@@ -359,7 +359,7 @@ export default function Signup() {
             <Typography variant="body" style={{ color: subText }} className="text-center">
               Already have an account? 
             </Typography>
-            <TouchableOpacity onPress={() => router.push("/auth/Login")}>
+            <TouchableOpacity onPress={() => router.replace("/auth/Login")}>
               <Typography variant="bodyBold" className="text-red-600 text-center">
                 {' '}Sign in
               </Typography>
