@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import { useColorScheme } from "nativewind";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
@@ -7,18 +6,15 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
-    View
+    View,
 } from "react-native";
 import CustomModal from "../../components/CustomModal";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
-import { useFonts } from "../../hooks/useFonts";
-
+import { useTheme } from "../../hooks/useTheme";
 
 export default function OTPVerifyReset() {
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
+    const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -28,11 +24,8 @@ export default function OTPVerifyReset() {
     const inputs = useRef<Array<TextInput | null>>([]);
     const [errorVisible, setErrorVisible] = useState(false);
 
-
     // Animation on mount
     useEffect(() => {
-        if (!fontsLoaded) return;
-
         Animated.parallel([
             Animated.timing(fadeAnim, {
                 toValue: 1,
@@ -95,25 +88,11 @@ export default function OTPVerifyReset() {
         router.push('/auth/CreateNewPassword');
     };
 
-    const brand = "#004aa9";
-    const bg = isDark ? "#0b0b0f" : "#ffffff";
-    const text = isDark ? "#ffffff" : "#111827";
-    const subText = isDark ? "#cbd5e1" : "#6b7280";
-    const inputBg = isDark ? "#1f2937" : "#f3f4f6";
-    const inputBorder = isDark ? "#374151" : "#e5e7eb";
-    const btnBg = isDark ? "#1E40AF" : brand;
-    const outline = isDark ? "#60A5FA" : brand;
-
-
-    if (!fontsLoaded) {
-        return null;
-    }
-
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
             <StatusBar
-                barStyle={isDark ? "light-content" : "dark-content"}
-                backgroundColor={bg}
+                barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
+                backgroundColor={colors.bg}
             />
 
             <Animated.ScrollView
@@ -126,12 +105,12 @@ export default function OTPVerifyReset() {
             >
                 <View className="items-center mt-10 mb-6">
                     {/* Title */}
-                    <Typography variant="h1" style={{ color: text }} className="text-center mb-2">
+                    <Typography variant="h1" style={{ color: colors.text }} className="text-center mb-2">
                         OTP Code Verification
                     </Typography>
-                    <Typography variant="body" style={{ color: subText }} className="text-center mb-8">
+                    <Typography variant="body" style={{ color: colors.subText }} className="text-center mb-8">
                         We have sent an OTP code to your email{"\n"}
-                        <Typography variant="bodyBold" style={{ color: text }}>
+                        <Typography variant="bodyBold" style={{ color: colors.text }}>
                             Stella123@gmail.com
                         </Typography>
                     </Typography>
@@ -149,21 +128,20 @@ export default function OTPVerifyReset() {
                                 className="w-16 h-16 text-center rounded-2xl text-3xl"
                                 style={[
                                     {
-                                        backgroundColor: inputBg,
-                                        color: text,
-                                        borderColor: inputBorder,
-                                        borderWidth: isDark ? 1 : 0
-                                    },
-                                    fontsLoaded && { fontFamily: 'Urbanist-SemiBold' }
+                                        backgroundColor: colors.fieldBg,
+                                        color: colors.text,
+                                        borderColor: colors.fieldBorder,
+                                        borderWidth: 1
+                                    }
                                 ]}
                             />
                         ))}
                     </View>
 
                     {/* Timer */}
-                    <Typography variant="body" style={{ color: subText }} className="mb-6">
+                    <Typography variant="body" style={{ color: colors.subText }} className="mb-6">
                         You can resend code in{" "}
-                        <Typography variant="bodyBold" style={{ color: outline }}>
+                        <Typography variant="bodyBold" style={{ color: colors.outline }}>
                             {timer}s
                         </Typography>
                     </Typography>
@@ -172,10 +150,11 @@ export default function OTPVerifyReset() {
                     <Button
                         title="Confirm"
                         onPress={handleConfirm}
+                        style={{ backgroundColor: colors.btnBg }}
                     />
 
                     {/* Resend Link */}
-                    <Typography variant="body" style={{ color: subText }} className="text-center mt-6">
+                    <Typography variant="body" style={{ color: colors.subText }} className="text-center mt-6">
                         Didn't receive an email?{" "}
                         <Typography variant="bodyBold" className="text-red-600">
                             Resend Code

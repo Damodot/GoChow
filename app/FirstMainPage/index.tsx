@@ -9,26 +9,15 @@ import {
     StatusBar,
     TouchableOpacity,
     View,
-    useColorScheme
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
-import { useFonts } from "../../hooks/useFonts";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function LoadedScreen() {
-    const [showButtons, setShowButtons] = useState(false)
-
-    const colorScheme = useColorScheme();
-    const isDarkMode = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
-    const [bgImage, setBgImage] = useState(
-        require("../../assets/images/LoadedBg.png")
-    );
-
-    const backgroundColor = isDarkMode ? "#00142e" : "#ffffff";
-    const textColor = isDarkMode ? "#ffffff" : "#004aa9";
-    const buttonBg = isDarkMode ? "#1E40AF" : "#004aa9";
-    const borderColor = isDarkMode ? "#60A5FA" : "#004aa9";
+    const [showButtons, setShowButtons] = useState(false);
+    const colors = useTheme();
+    const bgImage = require("../../assets/images/LoadedBg.png");
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -50,17 +39,12 @@ export default function LoadedScreen() {
         ]).start();
     }, []);
 
-
     const { width, height } = Dimensions.get("window");
 
-    if (!fontsLoaded) {
-        return null;
-    }
-
     return (
-        <View className="flex-1" style={{ backgroundColor }}>
+        <View className="flex-1" style={{ backgroundColor: colors.bg }}>
             <StatusBar
-                barStyle={isDarkMode ? "light-content" : "dark-content"}
+                barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
                 backgroundColor="transparent"
                 translucent
             />
@@ -90,7 +74,7 @@ export default function LoadedScreen() {
                     className="w-[230px] h-[120px]"
                     resizeMode="contain"
                 />
-                <Typography variant="h3" style={{ color: textColor }} className="mt-2 mb-6">
+                <Typography variant="h3" style={{ color: colors.text }} className="mt-2 mb-6">
                     Food Delivery
                 </Typography>
                 <Animated.View
@@ -103,19 +87,23 @@ export default function LoadedScreen() {
                     <Button
                         title="Login"
                         onPress={() => router.push("/auth/Login")}
-                        style={{ width: "85%", marginBottom: 15 }}
+                        style={{ 
+                            width: "85%", 
+                            marginBottom: 15,
+                            backgroundColor: colors.btnBg 
+                        }}
                     />
 
                     <TouchableOpacity
                         className="w-[85%] py-5 rounded-full"
                         style={{
                             borderWidth: 1,
-                            borderColor,
-                            backgroundColor: backgroundColor,
+                            borderColor: colors.outline,
+                            backgroundColor: colors.bg,
                         }}
                         onPress={() => router.push("/auth/Signup")}
                     >
-                        <Typography variant="button" style={{ color: textColor }} className="text-center">
+                        <Typography variant="button" style={{ color: colors.text }} className="text-center">
                             Create New Account
                         </Typography>
                     </TouchableOpacity>

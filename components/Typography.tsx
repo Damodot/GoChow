@@ -1,54 +1,44 @@
 // components/Typography.tsx
 import React from 'react';
 import { Text, TextProps } from 'react-native';
-import { useFonts } from '../hooks/useFonts';
 
-type Variant = 'h1' | 'h2' | 'h3' | 'body' | 'bodyBold' | 'caption' | 'button';
-type FontFamily = 'Urbanist' | 'Urbanist-Bold' | 'Urbanist-SemiBold' | 'Urbanist-Medium' | 'Urbanist-Light';
-
-interface CustomTextProps extends TextProps {
-    variant?: Variant;
-    fontFamily?: FontFamily;
+interface TypographyProps extends TextProps {
+  variant?: 'h1' | 'h2' | 'h3' | 'body' | 'bodyBold' | 'caption' | 'button';
+  children: React.ReactNode;
 }
 
-export const Typography = ({
-    children,
-    variant = 'body',
-    fontFamily,
-    style,
-    ...props
-}: CustomTextProps) => {
-    const { fontsLoaded } = useFonts();
+export const Typography: React.FC<TypographyProps> = ({ 
+  variant = 'body', 
+  style, 
+  children, 
+  ...props 
+}) => {
+  const getStyles = () => {
+    const baseStyle = { fontFamily: 'Urbanist' };
+    
+    switch (variant) {
+      case 'h1':
+        return { ...baseStyle, fontSize: 28, fontWeight: '700' };
+      case 'h2':
+        return { ...baseStyle, fontSize: 24, fontWeight: '700' };
+      case 'h3':
+        return { ...baseStyle, fontSize: 20, fontWeight: '700' };
+      case 'body':
+        return { ...baseStyle, fontSize: 16, fontWeight: '400' };
+      case 'bodyBold':
+        return { ...baseStyle, fontSize: 16, fontWeight: '700' };
+      case 'caption':
+        return { ...baseStyle, fontSize: 12, fontWeight: '400' };
+      case 'button':
+        return { ...baseStyle, fontSize: 16, fontWeight: '600' };
+      default:
+        return baseStyle;
+    }
+  };
 
-    // Define style variants with proper typing
-    const variantStyles: Record<Variant, object> = {
-        h1: { fontSize: 28, fontWeight: '700' as const },
-        h2: { fontSize: 24, fontWeight: '700' as const },
-        h3: { fontSize: 20, fontWeight: '600' as const },
-        body: { fontSize: 16, fontWeight: '400' as const },
-        bodyBold: { fontSize: 16, fontWeight: '700' as const },
-        caption: { fontSize: 14, fontWeight: '400' as const },
-        button: { fontSize: 16, fontWeight: '600' as const },
-    };
-
-    // Font family styles
-    const fontStyles = fontsLoaded ? {
-        fontFamily: fontFamily ||
-            (variant === 'bodyBold' || variant === 'button' || variant === 'h1' || variant === 'h2' || variant === 'h3'
-                ? 'Urbanist-Bold'
-                : 'Urbanist')
-    } : {};
-
-    return (
-        <Text
-            style={[
-                variantStyles[variant],
-                fontStyles,
-                style
-            ]}
-            {...props}
-        >
-            {children}
-        </Text>
-    );
+  return (
+    <Text style={[getStyles(), style]} {...props}>
+      {children}
+    </Text>
+  );
 };

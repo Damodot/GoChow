@@ -1,9 +1,8 @@
 import { Typography } from "@/components/Typography";
 import Button from "@/components/ui/Button";
-import { useFonts } from "@/hooks/useFonts";
+import { useTheme } from "@/hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from 'expo-router';
-import { useColorScheme } from "nativewind";
 import React, { useRef, useState } from "react";
 import { Animated, Dimensions, Easing, Image, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, ScrollView, StatusBar, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -32,9 +31,7 @@ const slides = [
 ];
 
 export default function OnboardingScreen() {
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
+    const colors = useTheme();
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollViewRef = useRef<ScrollView>(null);
@@ -77,14 +74,6 @@ export default function OnboardingScreen() {
     };
 
     const renderDots = () => {
-        const dotColors = isDark ? {
-            active: "#004aa9",
-            inactive: "#4b5563"
-        } : {
-            active: "#004aa9",
-            inactive: "#9ca3af"
-        };
-
         return (
             <View className="flex-row justify-center mb-5">
                 {slides.map((_, index) => {
@@ -96,7 +85,7 @@ export default function OnboardingScreen() {
                         }),
                         backgroundColor: dotAnimation.interpolate({
                             inputRange: [index - 0.5, index, index + 0.5],
-                            outputRange: [dotColors.inactive, dotColors.active, dotColors.inactive],
+                            outputRange: [colors.subText, colors.outline, colors.subText],
                             extrapolate: 'clamp',
                         }),
                         borderRadius: dotAnimation.interpolate({
@@ -119,79 +108,72 @@ export default function OnboardingScreen() {
         );
     };
 
-    if (!fontsLoaded) {
-        return null;
-    }
-
-    const bg = isDark ? "#0b0b0f" : "#ffffff";
-    const text = isDark ? "#ffffff" : "#111827";
-    const subText = isDark ? "#cbd5e1" : "#6b7280";
-
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
-            <StatusBar
-                barStyle={isDark ? "light-content" : "dark-content"}
-                backgroundColor="transparent"
-                translucent
-            />
-            
-            <View style={{ flex: 1 }}>
-                {/* Logo at the top - smaller and lower */}
-                <View className="items-center mt-12 mb-6">
-                    <Image
-                        source={require("@/assets/images/goChowLogo.png")}
-                        className="w-30 h-20"
-                        resizeMode="contain"
-                    />
+            <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+                <StatusBar
+                    barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
+                    backgroundColor="transparent"
+                    translucent
+                />
+
+                <View style={{ flex: 1 }}>
+                    {/* Logo at the top - smaller and lower */}
+                    <View className="items-center mt-12 mb-6">
+                        <Image
+                            source={require("@/assets/images/goChowLogo.png")}
+                            className="w-30 h-20"
+                            resizeMode="contain"
+                        />
+                    </View>
+
+                    <ScrollView
+                        ref={scrollViewRef}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        onScroll={handleScroll}
+                        scrollEventThrottle={16}
+                        bounces={false}
+                        scrollIndicatorInsets={{ right: 1 }}
+                    >
+                        {slides.map((item) => (
+                            <View
+                                key={item.id}
+                                style={{ width }}
+                                className="flex-1 items-center justify-center px-8"
+                            >
+                                {/* Onboarding image - bigger */}
+                                <Image
+                                    source={item.image}
+                                    className="w-72 h-72 mb-8"
+                                    resizeMode="contain"
+                                />
+
+                                {/* Title */}
+                                <Typography variant="h1" style={{ color: colors.text }} className="text-center mb-3">
+                                    {item.title}
+                                </Typography>
+
+                                {/* Description */}
+                                <Typography variant="body" style={{ color: colors.subText }} className="text-center leading-6 px-6">
+                                    {item.description}
+                                </Typography>
+                            </View>
+                        ))}
+                    </ScrollView>
+
+                    {renderDots()}
+
+                    <View className="mb-8 w-[85%] m-auto">
+                        <Button
+                            title={currentIndex === slides.length - 1 ? "Get Started" : "Next"}
+                            onPress={handleNext}
+                            style={{ backgroundColor: colors.btnBg }}
+                        />
+                    </View>
                 </View>
-
-                <ScrollView
-                    ref={scrollViewRef}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                    bounces={false}
-                    scrollIndicatorInsets={{ right: 1 }}
-                >
-                    {slides.map((item) => (
-                        <View
-                            key={item.id}
-                            style={{ width }}
-                            className="flex-1 items-center justify-center px-8"
-                        >
-                            {/* Onboarding image - bigger */}
-                            <Image
-                                source={item.image}
-                                className="w-72 h-72 mb-8"
-                                resizeMode="contain"
-                            />
-
-                            {/* Title */}
-                            <Typography variant="h1" style={{ color: text }} className="text-center mb-3">
-                                {item.title}
-                            </Typography>
-
-                            {/* Description */}
-                            <Typography variant="body" style={{ color: subText }} className="text-center leading-6 px-6">
-                                {item.description}
-                            </Typography>
-                        </View>
-                    ))}
-                </ScrollView>
-
-                {renderDots()}
-
-                <View className="mb-8 w-[85%] m-auto">
-                    <Button
-                        title={currentIndex === slides.length - 1 ? "Get Started" : "Next"}
-                        onPress={handleNext}
-                    />
-                </View>
-            </View>
-        </SafeAreaView>
-        </GestureHandlerRootView >
+            </SafeAreaView>
+        </GestureHandlerRootView>
     );
 }

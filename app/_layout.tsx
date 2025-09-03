@@ -20,6 +20,13 @@ export default function RootLayout() {
           <Stack.Screen name="auth/OtpVerifyReset" />
           <Stack.Screen name="auth/ResetPassword" />
           <Stack.Screen name="auth/CreateNewPassword" />
+          <Stack.Screen name="auth/PasswordChangeConfirmed" />
+          <Stack.Screen name="dashboard/index" />
+          <Stack.Screen name="dashboard/HomeScreen" />
+          <Stack.Screen name="dashboard/ExtrasScreen" />
+          <Stack.Screen name="dashboard/PaymentScreen" />
+          <Stack.Screen name="dashboard/ProfileScreen" />
+          <Stack.Screen name="dashboard/SettingsScreen" />
           <Stack.Screen name="Onboarding/OnboardingScreen" />
         </Stack>
       </FontProvider>

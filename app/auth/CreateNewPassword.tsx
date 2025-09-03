@@ -1,25 +1,22 @@
 import CustomAlert from "@/components/CustomAlert";
 import { Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
-    Pressable,
     SafeAreaView,
     StatusBar,
     TextInput,
     TouchableOpacity,
-    useColorScheme,
     View
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
-import { useFonts } from "../../hooks/useFonts";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function CreateNewPassword() {
-    const colorScheme = useColorScheme();
-    const isDark = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
+    const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -41,17 +38,6 @@ export default function CreateNewPassword() {
         ]).start();
     }, []);
 
-    const brand = "#004aa9";
-    const bg = isDark ? "#0b0b0f" : "#ffffff";
-    const text = isDark ? "#ffffff" : "#111827";
-    const subText = isDark ? "#cbd5e1" : "#6b7280";
-    const fieldBg = isDark ? "#1f2937" : "#f3f4f6";
-    const fieldBorder = isDark ? "#374151" : "#e5e7eb";
-    const divider = isDark ? "#334155" : "#e5e7eb";
-    const btnBg = isDark ? "#1E40AF" : brand;
-    const outline = isDark ? "#60A5FA" : brand;
-    const iconColor = isDark ? "#9ca3af" : "#6b7280";
-
     const [newPassword, setNewPassword] = useState("");
     const [confNewPassword, setConfNewPassword] = useState("");
     const [remember, setRemember] = useState(true);
@@ -68,7 +54,7 @@ export default function CreateNewPassword() {
         setToastVisible(true);
     };
 
-    const handleSignIn = () => {
+    const handleCreatePassword = () => {
         if (!newPassword || !confNewPassword) {
             showToast('error', 'All fields are mandatory');
             return;
@@ -81,19 +67,15 @@ export default function CreateNewPassword() {
 
         showToast('success', 'Password updated successfully');
         setTimeout(() => {
-            // router.push()
+            router.replace("/auth/PasswordChangeConfirmed")
         }, 2000);
     };
 
-    if (!fontsLoaded) {
-        return null;
-    }
-
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
             <StatusBar
-                barStyle={isDark ? "light-content" : "dark-content"}
-                backgroundColor={bg}
+                barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
+                backgroundColor={colors.bg}
             />
             <Animated.ScrollView
                 style={{
@@ -105,16 +87,16 @@ export default function CreateNewPassword() {
             >
                 {/* Header */}
                 <View className="items-center mt-10 mb-6">
-                    <Typography variant="h1" style={{ color: text }} className="text-center">
+                    <Typography variant="h1" style={{ color: colors.text }} className="text-center">
                         Create new Password
                     </Typography>
-                    <Typography variant="body" style={{ color: subText }} className="mt-5 text-sm text-center">
+                    <Typography variant="body" style={{ color: colors.subText }} className="mt-5 text-sm text-center">
                         You can now create a new password
                     </Typography>
                 </View>
 
                 <View className="my-4">
-                    <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+                    <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
                         New Password
                     </Typography>
                     <View className="flex-row items-center">
@@ -122,18 +104,18 @@ export default function CreateNewPassword() {
                             value={newPassword}
                             onChangeText={setNewPassword}
                             placeholder="Enter new password"
-                            placeholderTextColor={subText}
+                            placeholderTextColor={colors.subText}
                             secureTextEntry={!showNewPassword}
                             autoCapitalize="none"
                             className="flex-1 h-12 rounded-2xl px-4"
                             style={[
                                 {
-                                    backgroundColor: fieldBg,
+                                    backgroundColor: colors.fieldBg,
                                     height: 55,
-                                    color: text,
-                                },
-                                fontsLoaded && { fontFamily: 'Urbanist' }
+                                    color: colors.text,
+                                }
                             ]}
+                            onSubmitEditing={handleCreatePassword}
                         />
                         <TouchableOpacity
                             onPress={() => setShowNewPassword(!showNewPassword)}
@@ -142,7 +124,7 @@ export default function CreateNewPassword() {
                             <Ionicons
                                 name={showNewPassword ? "eye-off" : "eye"}
                                 size={20}
-                                color={iconColor}
+                                color={colors.subText}
                             />
                         </TouchableOpacity>
                     </View>
@@ -150,7 +132,7 @@ export default function CreateNewPassword() {
 
                 {/* Confirm New Password */}
                 <View className="mb-3">
-                    <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+                    <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
                         Confirm New Password
                     </Typography>
                     <View className="flex-row items-center">
@@ -158,18 +140,17 @@ export default function CreateNewPassword() {
                             value={confNewPassword}
                             onChangeText={setConfNewPassword}
                             placeholder="Confirm new password"
-                            placeholderTextColor={subText}
+                            placeholderTextColor={colors.subText}
                             secureTextEntry={!showConfPassword}
                             className="flex-1 h-12 rounded-2xl px-4"
                             style={[
                                 {
-                                    backgroundColor: fieldBg,
+                                    backgroundColor: colors.fieldBg,
                                     height: 55,
-                                    color: text,
-                                },
-                                fontsLoaded && { fontFamily: 'Urbanist' }
+                                    color: colors.text,
+                                }
                             ]}
-                            onSubmitEditing={handleSignIn}
+                            onSubmitEditing={handleCreatePassword}
                         />
                         <TouchableOpacity
                             onPress={() => setShowConfPassword(!showConfPassword)}
@@ -178,40 +159,17 @@ export default function CreateNewPassword() {
                             <Ionicons
                                 name={showConfPassword ? "eye-off" : "eye"}
                                 size={20}
-                                color={iconColor}
+                                color={colors.subText}
                             />
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                <View className="flex-row items-center justify-between mt-6 mb-12">
-                    <Pressable
-                        onPress={() => setRemember((r) => !r)}
-                        className="flex-row items-center"
-                    >
-                        <View
-                            className="w-5 h-5 rounded-full mr-2 items-center justify-center"
-                            style={{
-                                borderWidth: 1.5,
-                                borderColor: outline,
-                                backgroundColor: remember ? outline : "transparent",
-                            }}
-                        >
-                            {remember ? (
-                                <View className="w-2.5 h-2.5 rounded-full bg-white" />
-                            ) : null}
-                        </View>
-                        <Typography variant="body" style={{ color: text }}>
-                            Remember Me
-                        </Typography>
-                    </Pressable>
-                </View>
-
-                {/* Sign in */}
-                <View>
+                <View className="mt-4">
                     <Button
                         title="Next"
-                        onPress={handleSignIn}
+                        onPress={handleCreatePassword}
+                        style={{ backgroundColor: colors.btnBg }}
                     />
                 </View>
             </Animated.ScrollView>

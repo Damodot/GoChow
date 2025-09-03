@@ -10,7 +10,6 @@ import {
     useColorScheme
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFonts } from '../hooks/useFonts';
 import { Typography } from './Typography';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
@@ -41,7 +40,6 @@ export default function CustomAlert({
 }: CustomAlertProps) {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
-    const { fontsLoaded } = useFonts();
 
     const kind: AlertVariant = (variant ?? type ?? 'info');
     const { name, color, darkColor } = ICONS[kind];
@@ -92,7 +90,7 @@ export default function CustomAlert({
         return () => clearTimeout(t);
     }, [visible, onClose, opacity, slideY]);
 
-    if (!visible || !fontsLoaded) return null;
+    if (!visible) return null;
 
     return (
         <Modal

@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -6,17 +7,13 @@ import {
     SafeAreaView,
     StatusBar,
     TextInput,
-    useColorScheme,
     View
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
-import { useFonts } from "../../hooks/useFonts";
 
 export default function LoginScreen() {
-    const colorScheme = useColorScheme();
-    const isDark = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
+    const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -38,35 +35,22 @@ export default function LoginScreen() {
         ]).start();
     }, []);
 
-    // theme tokens (same vibe as your splash screen)
-    const brand = "#004aa9";
-    const bg = isDark ? "#0b0b0f" : "#ffffff";
-    const text = isDark ? "#ffffff" : "#111827";
-    const subText = isDark ? "#cbd5e1" : "#6b7280";
-    const fieldBg = isDark ? "#1f2937" : "#f3f4f6";
-    const fieldBorder = isDark ? "#374151" : "#e5e7eb";
-    const divider = isDark ? "#334155" : "#e5e7eb";
-    const btnBg = isDark ? "#1E40AF" : brand;
-    const outline = isDark ? "#60A5FA" : brand;
-    const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(true);
 
-    const handleSignIn = () => {
-        alert(`Signing in as ${email || "guest"}…`);
-    };
-
-    if (!fontsLoaded) {
-        return null;
+    const handleReset = () => {
+        if (!email) {
+            return
+        }
+        router.replace('/auth/OtpVerifyReset')
     }
 
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
             <StatusBar
-                barStyle={isDark ? "light-content" : "dark-content"}
-                backgroundColor={bg}
+                barStyle={colors.text === '#ffffff' ? "light-content" : "dark-content"}
+                backgroundColor={colors.bg}
             />
             <Animated.ScrollView
                 style={{
@@ -78,41 +62,40 @@ export default function LoginScreen() {
             >
                 {/* Header */}
                 <View className="items-center mt-10 mb-6">
-                    <Typography variant="h1" style={{ color: text }} className="text-center">
+                    <Typography variant="h1" style={{ color: colors.text }} className="text-center">
                         Reset Password
                     </Typography>
-                    <Typography variant="body" style={{ color: subText }} className="mt-5 text-sm text-center">
+                    <Typography variant="body" style={{ color: colors.subText }} className="mt-5 text-sm text-center">
                         Please enter your email to receive the link to create a new password.
                     </Typography>
                 </View>
 
                 {/* Email */}
                 <View className="mt-4 mb-8">
-                    <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+                    <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
                         Email
                     </Typography>
                     <TextInput
                         value={email}
                         onChangeText={setEmail}
                         placeholder="Enter email"
-                        placeholderTextColor={subText}
+                        placeholderTextColor={colors.subText}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         className="h-12 rounded-2xl px-4"
                         style={[
                             {
-                                backgroundColor: fieldBg,
+                                backgroundColor: colors.fieldBg,
                                 height: 55,
-                                color: text,
-                            },
-                            fontsLoaded && { fontFamily: 'Urbanist' }
+                                color: colors.text,
+                            }
                         ]}
                     />
                 </View>
 
                 <Button
                     title="Send"
-                    onPress={() => router.push("/auth/OtpVerifyReset")}
+                    onPress={handleReset}
                 />
             </Animated.ScrollView>
         </SafeAreaView>

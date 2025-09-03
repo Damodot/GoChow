@@ -9,7 +9,6 @@ import {
     StyleSheet,
     View
 } from "react-native";
-import { useFonts } from "../hooks/useFonts";
 import { Typography } from "./Typography";
 import Button from "./ui/Button";
 
@@ -33,7 +32,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === "dark";
     const brand = "#004aa9";
-    const { fontsLoaded } = useFonts();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -62,9 +60,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
     const textColor = isDark ? "#f9fafb" : "#111827";
     const subTextColor = isDark ? "#9ca3af" : "#6B7280";
 
-    if (!fontsLoaded) {
-        return null;
-    }
 
     return (
         <Modal

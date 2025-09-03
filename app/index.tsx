@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
     ActivityIndicator,
     Animated,
@@ -9,49 +9,34 @@ import {
     ImageBackground,
     StatusBar,
     View,
-    useColorScheme
 } from "react-native";
 import { Typography } from "../components/Typography";
-import { useFonts } from "../hooks/useFonts";
+import { useTheme } from "../hooks/useTheme";
 
 export default function LoadingScreen() {
-    const [showButtons, setShowButtons] = useState(false);
-    const [bgImage, setBgImage] = useState(
-        require("../assets/images/LoadingBg.png")
-    );
+    const bgImage = require("../assets/images/LoadingBg.png")
 
-    const colorScheme = useColorScheme();
-    const isDarkMode = colorScheme === "dark";
-    const { fontsLoaded } = useFonts();
-
-    const backgroundColor = isDarkMode ? "#00142e" : "#ffffff";
-    const textColor = isDarkMode ? "#ffffff" : "#004aa9";
-    const buttonBg = isDarkMode ? "#1E40AF" : "#004aa9";
-    const borderColor = isDarkMode ? "#60A5FA" : "#004aa9";
+    const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
 
     useEffect(() => {
-
-        setTimeout( async () => {
+        const timer = setTimeout(async () => {
             const hasSeenOnboarding = await AsyncStorage.getItem("hasSeenOnboarding");
             // router.replace(hasSeenOnboarding ? '/FirstMainPage' : '/Onboarding/OnboardingScreen')
-            router.replace('/Onboarding/OnboardingScreen')
+            router.replace('/Onboarding/OnboardingScreen');
         }, 3000);
 
+        return () => clearTimeout(timer);
     }, []);
 
     const { width, height } = Dimensions.get("window");
 
-    if (!fontsLoaded) {
-        return null;
-    }
-
     return (
-        <View className="flex-1" style={{ backgroundColor }}>
+        <View className="flex-1" style={{ backgroundColor: colors.bg }}>
             <StatusBar
-                barStyle={isDarkMode ? "light-content" : "dark-content"}
+                barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
                 backgroundColor="transparent"
                 translucent
             />
@@ -81,11 +66,11 @@ export default function LoadingScreen() {
                     className="w-[230px] h-[120px]"
                     resizeMode="contain"
                 />
-                <Typography variant="h3" style={{ color: textColor }} className="mt-2 mb-6">
+                <Typography variant="h3" style={{ color: colors.text }} className="mt-2 mb-6">
                     Food Delivery
                 </Typography>
 
-                <ActivityIndicator size="large" color={buttonBg} />
+                <ActivityIndicator size="large" color={colors.btnBg} />
             </View>
         </View>
     );

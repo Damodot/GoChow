@@ -10,17 +10,14 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
-  useColorScheme,
-  View
+  View,
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
-import { useFonts } from "../../hooks/useFonts";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Signup() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const { fontsLoaded } = useFonts();
+  const colors = useTheme();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -41,18 +38,6 @@ export default function Signup() {
       }),
     ]).start();
   }, []);
-
-  const brand = "#004aa9";
-  const bg = isDark ? "#0b0b0f" : "#ffffff";
-  const text = isDark ? "#ffffff" : "#111827";
-  const subText = isDark ? "#cbd5e1" : "#6b7280";
-  const fieldBg = isDark ? "#1f2937" : "#f3f4f6";
-  const fieldBorder = isDark ? "#374151" : "#e5e7eb";
-  const divider = isDark ? "#334155" : "#e5e7eb";
-  const btnBg = isDark ? "#1E40AF" : brand;
-  const outline = isDark ? "#60A5FA" : brand;
-  const appleLogo = isDark ? "#f3f4f6" : "5b5b5b";
-  const iconColor = isDark ? "#9ca3af" : "#6b7280";
 
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
@@ -85,15 +70,11 @@ export default function Signup() {
     showToast('success', 'User created successfully')
   };
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: bg }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
       <StatusBar
-        barStyle={isDark ? "light-content" : "dark-content"}
-        backgroundColor={bg}
+        barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
+        backgroundColor={colors.bg}
       />
       <Animated.ScrollView
         style={{
@@ -105,85 +86,82 @@ export default function Signup() {
       >
         {/* Header */}
         <View className="items-center mt-10 mb-6">
-          <Typography variant="h1" style={{ color: text }} className="text-center">
+          <Typography variant="h1" style={{ color: colors.text }} className="text-center">
             Create New Account
           </Typography>
-          <Typography variant="body" style={{ color: subText }} className="mt-3 text-sm text-center">
+          <Typography variant="body" style={{ color: colors.subText }} className="mt-3 text-sm text-center">
             Create a new account to explore GO CHOWW
           </Typography>
         </View>
 
         <View className="my-3">
-          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+          <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
             Name
           </Typography>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="Enter Name"
-            placeholderTextColor={subText}
+            placeholderTextColor={colors.subText}
             keyboardType="default"
             autoCapitalize="none"
             className="h-12 rounded-2xl px-4"
             style={[
               {
-                backgroundColor: fieldBg,
+                backgroundColor: colors.fieldBg,
                 height: 55,
-                color: text,
-              },
-              fontsLoaded && { fontFamily: 'Urbanist' }
+                color: colors.text,
+              }
             ]}
           />
         </View>
 
         <View className="mb-3">
-          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+          <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
             Phone Number
           </Typography>
           <TextInput
             value={phoneNum}
             onChangeText={setPhoneNum}
             placeholder="(+234)"
-            placeholderTextColor={subText}
+            placeholderTextColor={colors.subText}
             keyboardType="phone-pad"
             className="h-12 rounded-2xl px-4"
             style={[
               {
-                backgroundColor: fieldBg,
+                backgroundColor: colors.fieldBg,
                 height: 55,
-                color: text,
-              },
-              fontsLoaded && { fontFamily: 'Urbanist' }
+                color: colors.text,
+              }
             ]}
             onSubmitEditing={handleSignIn}
           />
         </View>
 
         <View className="mb-3">
-          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+          <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
             Email
           </Typography>
           <TextInput
             value={email}
             onChangeText={setEmail}
             placeholder="Enter email"
-            placeholderTextColor={subText}
+            placeholderTextColor={colors.subText}
             keyboardType="email-address"
             autoCapitalize="none"
             className="h-12 rounded-2xl px-4"
             style={[
               {
-                backgroundColor: fieldBg,
+                backgroundColor: colors.fieldBg,
                 height: 55,
-                color: text,
-              },
-              fontsLoaded && { fontFamily: 'Urbanist' }
+                color: colors.text,
+              }
             ]}
           />
         </View>
 
         <View className="mb-3">
-          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+          <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
             Password
           </Typography>
           <View className="flex-row items-center">
@@ -191,16 +169,15 @@ export default function Signup() {
               value={password}
               onChangeText={setPassword}
               placeholder="Enter Password"
-              placeholderTextColor={subText}
+              placeholderTextColor={colors.subText}
               secureTextEntry={!showPassword}
               className="flex-1 h-12 rounded-2xl px-4"
               style={[
                 {
-                  backgroundColor: fieldBg,
+                  backgroundColor: colors.fieldBg,
                   height: 55,
-                  color: text,
-                },
-                fontsLoaded && { fontFamily: 'Urbanist' }
+                  color: colors.text,
+                }
               ]}
             />
             <TouchableOpacity
@@ -210,7 +187,7 @@ export default function Signup() {
               <Ionicons
                 name={showPassword ? "eye-off" : "eye"}
                 size={20}
-                color={iconColor}
+                color={colors.subText}
               />
             </TouchableOpacity>
           </View>
@@ -218,7 +195,7 @@ export default function Signup() {
 
         {/* Confirm New Password */}
         <View className="mb-3">
-          <Typography variant="bodyBold" style={{ color: text }} className="mb-2 ms-3 text-md">
+          <Typography variant="bodyBold" style={{ color: colors.text }} className="mb-2 ms-3 text-md">
             Confirm New Password
           </Typography>
           <View className="flex-row items-center">
@@ -226,16 +203,15 @@ export default function Signup() {
               value={confPassword}
               onChangeText={setConfPassword}
               placeholder="Enter Password"
-              placeholderTextColor={subText}
+              placeholderTextColor={colors.subText}
               secureTextEntry={!showConfPassword}
               className="flex-1 h-12 rounded-2xl px-4"
               style={[
                 {
-                  backgroundColor: fieldBg,
+                  backgroundColor: colors.fieldBg,
                   height: 55,
-                  color: text,
-                },
-                fontsLoaded && { fontFamily: 'Urbanist' }
+                  color: colors.text,
+                }
               ]}
               onSubmitEditing={handleSignIn}
             />
@@ -246,7 +222,7 @@ export default function Signup() {
               <Ionicons
                 name={showConfPassword ? "eye-off" : "eye"}
                 size={20}
-                color={iconColor}
+                color={colors.subText}
               />
             </TouchableOpacity>
           </View>
@@ -261,21 +237,21 @@ export default function Signup() {
               className="w-5 h-5 rounded-full mr-2 items-center justify-center"
               style={{
                 borderWidth: 1.5,
-                borderColor: outline,
-                backgroundColor: termsAgreement ? outline : "transparent",
+                borderColor: colors.outline,
+                backgroundColor: termsAgreement ? colors.outline : "transparent",
               }}
             >
               {termsAgreement ? (
                 <View className="w-2.5 h-2.5 rounded-full bg-white" />
               ) : null}
             </View>
-            <Typography variant="body" style={{ color: text }}>
+            <Typography variant="body" style={{ color: colors.text }}>
               I agree to the
             </Typography>
           </Pressable>
 
           <TouchableOpacity onPress={() => alert("Terms of Service and Privacy Policy Pressed")}>
-            <Typography variant="bodyBold" style={{ color: outline }}>
+            <Typography variant="bodyBold" style={{ color: colors.outline }}>
               Terms of Service and Privacy Policy
             </Typography>
           </TouchableOpacity>
@@ -286,16 +262,17 @@ export default function Signup() {
           <Button
             title="Sign Up"
             onPress={handleSignIn}
+            style={{ backgroundColor: colors.btnBg }}
           />
         </View>
 
         {/* Divider */}
         <View className="flex-row items-center mt-6 mb-6">
-          <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
-          <Typography variant="caption" style={{ color: subText }} className="mx-3 text-xs">
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
+          <Typography variant="caption" style={{ color: colors.subText }} className="mx-3 text-xs">
             Or Continue with
           </Typography>
-          <View style={{ flex: 1, height: 1, backgroundColor: divider }} />
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.divider }} />
         </View>
 
         {/* Social buttons */}
@@ -304,59 +281,59 @@ export default function Signup() {
           <TouchableOpacity
             className="w-14 h-14 rounded-2xl items-center justify-center"
             style={{
-              backgroundColor: isDark ? "#111827" : "#ffffff",
+              backgroundColor: colors.bg,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.15,
               shadowRadius: 6,
               elevation: 5,
-              borderWidth: isDark ? 1 : 0,
-              borderColor: fieldBorder,
+              borderWidth: 1,
+              borderColor: colors.fieldBorder,
             }}
             onPress={() => alert("Continue with Google")}
           >
-            <AntDesign name="google" size={22} color={outline} />
+            <AntDesign name="google" size={22} color={colors.outline} />
           </TouchableOpacity>
 
           <TouchableOpacity
             className="w-14 h-14 rounded-2xl items-center justify-center"
             style={{
-              backgroundColor: isDark ? "#111827" : "#ffffff",
+              backgroundColor: colors.bg,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.15,
               shadowRadius: 6,
               elevation: 5,
-              borderWidth: isDark ? 1 : 0,
-              borderColor: fieldBorder,
+              borderWidth: 1,
+              borderColor: colors.fieldBorder,
             }}
             onPress={() => alert("Continue with Apple")}
           >
-            <FontAwesome name="apple" size={24} color={appleLogo} />
+            <FontAwesome name="apple" size={24} color={colors.text === "#ffffff" ? "#f3f4f6" : "#5b5b5b"} />
           </TouchableOpacity>
 
           <TouchableOpacity
             className="w-14 h-14 rounded-2xl items-center justify-center"
             style={{
-              backgroundColor: isDark ? "#111827" : "#ffffff",
+              backgroundColor: colors.bg,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.15,
               shadowRadius: 6,
               elevation: 5,
-              borderWidth: isDark ? 1 : 0,
-              borderColor: fieldBorder,
+              borderWidth: 1,
+              borderColor: colors.fieldBorder,
             }}
             onPress={() => alert("Continue with Facebook")}
           >
-            <FontAwesome name="facebook" size={22} color={outline} />
+            <FontAwesome name="facebook" size={22} color={colors.outline} />
           </TouchableOpacity>
         </View>
 
         {/* Sign up link */}
         <View className="flex items-center justify-center mb-8">
           <View className="flex-row items-center">
-            <Typography variant="body" style={{ color: subText }} className="text-center">
+            <Typography variant="body" style={{ color: colors.subText }} className="text-center">
               Already have an account? 
             </Typography>
             <TouchableOpacity onPress={() => router.replace("/auth/Login")}>
@@ -375,6 +352,6 @@ export default function Signup() {
           setToastVisible(false);
         }}
       />
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }

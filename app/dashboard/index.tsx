@@ -1,237 +1,63 @@
-import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useColorScheme } from 'nativewind';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Image, StatusBar, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import CurvedDark from "../../assets/images/curvedTabElement4.svg";
-import CurvedLight from "../../assets/images/curvedTabElementlight.svg";
+// app/dashboard/index.tsx
+import { BottomTabBarProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useRef } from "react";
+import {
+    Animated,
+    Dimensions,
+    Image,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CenterLogo from "../../components/ui/CurvedTab";
 
-import ExtrasScreen from './ExtrasScreen';
-import HomeScreen from './HomeScreen';
-import PaymentScreen from './PaymentScreen';
-import ProfileScreen from './ProfileScreen';
-import SettingsScreen from './SettingsScreen';
+// Import your screens
+import { useTheme } from "@/hooks/useTheme";
+import ExtrasScreen from "./ExtrasScreen";
+import HomeScreen from "./HomeScreen";
+import PaymentScreen from "./PaymentScreen";
+import ProfileScreen from "./ProfileScreen";
+import SettingsScreen from "./SettingsScreen";
 
 const Tab = createBottomTabNavigator();
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const TAB_COUNT = 5;
+const TAB_WIDTH = SCREEN_WIDTH / TAB_COUNT;
 
 
-// ---------- Custom Tab Bar ----------
-function CurvedTabBar(props: BottomTabBarProps & {
-    tabBg: string;
-    tabIconColor: string;
-    activeTabColor: string;
-    isDark: boolean;
-}) {
-    const { state, descriptors, navigation, tabBg, tabIconColor, activeTabColor, isDark } = props;
+const LOGO_WIDTH = Math.round(SCREEN_WIDTH * 30);
+const LOGO_HEIGHT = Math.round(LOGO_WIDTH * 0.11112524);
 
+const tabOrder = ["Extras", "Payment", "Home", "Profile", "Settings"] as const;
+type TabName = typeof tabOrder[number];
 
-    const [barWidth, setBarWidth] = useState(SCREEN_WIDTH);
-    const routesCount = state.routes.length;
-    const TAB_WIDTH = barWidth / routesCount;
-
-    // Keep your same proportion for the curved art
-    const imageSize = (2 * barWidth) / 5;
-
-    // Start under the initially focused tab (e.g., Home)
-    const translateX = useRef(
-        new Animated.Value(state.index * TAB_WIDTH + TAB_WIDTH / 2 - imageSize / 2)
-    ).current;
-
-    // When index (active tab) changes or barWidth changes, slide the indicator
-    useEffect(() => {
-        const iconCenter = state.index * TAB_WIDTH + TAB_WIDTH / 2;
-        Animated.spring(translateX, {
-            toValue: iconCenter - imageSize / 2,
-            friction: 5,
-            tension: 20,
-            useNativeDriver: true,
-        }).start();
-    }, [state.index, TAB_WIDTH, imageSize, translateX]);
-
-    const getIconFor = (name: string, isFocused: boolean) => {
-        switch (name) {
-            case 'Home':
-                return isFocused
-                    ? require('../../assets/images/homeFocused.png')
-                    : require('../../assets/images/home.png');
-            case 'Extras':
-                return isFocused
-                    ? require('../../assets/images/extraFocused.png')
-                    : require('../../assets/images/extra.png');
-            case 'Profile':
-                return isFocused
-                    ? require('../../assets/images/profileFocused.png')
-                    : require('../../assets/images/profile.png');
-            case 'Settings':
-                return isFocused
-                    ? require('../../assets/images/settingsFocused.png')
-                    : require('../../assets/images/settings.png');
-            case 'Payment':
-                return isFocused
-                    ? require('../../assets/images/walletFocused.png')
-                    : require('../../assets/images/wallet.png');
-            default:
-                return require('../../assets/images/home.png');
-        }
-    };
-
-
-    return (
-        <View
-            onLayout={e => setBarWidth(e.nativeEvent.layout.width)}
-            style={{
-                backgroundColor: tabBg,
-                height: 70,
-                borderTopWidth: 0,
-                overflow: 'hidden',
-                paddingTop: 20,
-            }}
-        >
-            {/* Curved element (rendered once, moves under the focused icon) */}
-            <Animated.View
-                pointerEvents="none"
-                style={{
-                    position: 'absolute',
-                    top: -112,
-                    left: 0,
-                    width: imageSize,
-                    height: imageSize / 2,
-                    transform: [{ translateX }],
-                    alignItems: 'center',
-                }}
-            >
-                {isDark ? (
-                    <CurvedDark width="390%" height="390%" />
-                ) : (
-                    <CurvedLight width="390%" height="390%" />
-                )}
-            </Animated.View>
-
-
-            {/* Icons row */}
-            {/* Icons row */}
-            <View style={{ flexDirection: 'row' }}>
-                {state.routes.map((route, index) => {
-                    const { options } = descriptors[route.key];
-                    const isFocused = state.index === index;
-
-                    const onPress = () => {
-                        const event = navigation.emit({
-                            type: 'tabPress',
-                            target: route.key,
-                            canPreventDefault: true,
-                        });
-
-                        if (!isFocused && !event.defaultPrevented) {
-                            navigation.navigate(route.name);
-                        }
-                    };
-
-                    const onLongPress = () => {
-                        navigation.emit({
-                            type: 'tabLongPress',
-                            target: route.key,
-                        });
-                    };
-
-                    const iconSource = getIconFor(route.name, isFocused);
-
-                    // Each tab gets its own animated value
-                    const translateY = useRef(new Animated.Value(0)).current;
-
-                    useEffect(() => {
-                        Animated.spring(translateY, {
-                            toValue: isFocused ? -18 : 0, 
-                            friction: 5,
-                            tension: 20,
-                            useNativeDriver: true,
-                        }).start();
-                    }, [isFocused]);
-
-                    return (
-                        <TouchableOpacity
-                            key={route.key}
-                            accessibilityRole="button"
-                            accessibilityState={isFocused ? { selected: true } : {}}
-                            onPress={onPress}
-                            onLongPress={onLongPress}
-                            style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Animated.View
-                                style={[
-                                    {
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: 50,
-                                        height: 50,
-                                        borderRadius: 25,
-                                        transform: [{ translateY }],
-                                    },
-                                    isFocused && {
-                                        backgroundColor: '#ff5821',
-                                        shadowColor: '#000',
-                                        shadowOffset: { width: 0, height: 3 },
-                                        shadowOpacity: 0.3,
-                                        shadowRadius: 4,
-                                        elevation: 6,
-                                    },
-                                ]}
-                            >
-                                <Image
-                                    source={iconSource}
-                                    resizeMode="contain"
-                                    style={{
-                                        width: 23,
-                                        height: 23,
-                                        tintColor: isFocused ? '#ffffff' : tabIconColor,
-                                    }}
-                                />
-                            </Animated.View>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
-        </View>
-    );
-}
-
-// ---------- Main Dashboard ----------
 export default function Dashboard() {
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === 'dark';
-
-    const brand = '#004aa9';
-    const bg = isDark ? '#1e2f40' : '#ffffff';
-    const tabBg = isDark ? '#1f2937' : '#ededed';
-    const tabIconColor = isDark ? '#9ca3af' : '#6b7280';
-    const activeTabColor = isDark ? '#60A5FA' : brand;
-
+    const colors = useTheme()
     return (
         <>
-            {/* Top safe area only */}
-            <SafeAreaView edges={['top']} style={{ flex: 0, backgroundColor: bg }} />
+            <SafeAreaView
+                edges={['top']}
+                style={{ flex: 0, backgroundColor: colors.dashboardbg }}
+            />
 
-            {/* Bottom part (Navigator itself) */}
-            <SafeAreaView edges={['left', 'right', 'bottom']} style={{ flex: 1, backgroundColor: tabBg }}>
-                <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-
+            <SafeAreaView edges={["left", "right"]} className="flex-1" style={{ backgroundColor: colors.dashboardbg }} >
                 <Tab.Navigator
                     initialRouteName="Home"
-                    screenOptions={{ headerShown: false }}
-                    tabBar={props => (
-                        <CurvedTabBar
-                            {...props}
-                            tabBg={tabBg}
-                            tabIconColor={tabIconColor}
-                            activeTabColor={activeTabColor}
-                            isDark={isDark}
-                        />
-                    )}
+                    screenOptions={{
+                        headerShown: false,
+                        tabBarShowLabel: false,
+                        tabBarStyle: {
+                            position: "absolute",
+                            backgroundColor: "transparent",
+                            borderTopWidth: 0,
+                            elevation: 0,
+                            height: 92,
+                            overflow: 'hidden'
+                        },
+                    }}
+                    tabBar={(props) => <FloatingTabBar {...props} />}
                 >
                     <Tab.Screen name="Extras" component={ExtrasScreen} />
                     <Tab.Screen name="Payment" component={PaymentScreen} />
@@ -243,3 +69,177 @@ export default function Dashboard() {
         </>
     );
 }
+
+function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
+    const activeIndex = state.index;
+
+    // Icon lift animations (native Animated API)
+    const animatedValues = useRef(tabOrder.map(() => new Animated.Value(0))).current;
+
+    useEffect(() => {
+        animatedValues.forEach((anim, i) => {
+            Animated.spring(anim, {
+                toValue: i === activeIndex ? -40 : 0,
+                friction: 2,
+                tension: 20,
+                useNativeDriver: true,
+            }).start();
+        });
+    }, [activeIndex, animatedValues]);
+
+    const initialLeft = (SCREEN_WIDTH - LOGO_WIDTH) / 2; // usually negative when LOGO_WIDTH > SCREEN_WIDTH
+    // start translateX so SVG center is under activeIndex
+    const startTranslate = (activeIndex * TAB_WIDTH + TAB_WIDTH / 2) - SCREEN_WIDTH / 2;
+    const svgTranslate = useRef(new Animated.Value(startTranslate)).current;
+
+    useEffect(() => {
+        let target = (activeIndex * TAB_WIDTH + TAB_WIDTH / 2) - SCREEN_WIDTH / 2;
+        target += (
+            activeIndex === 0 ? 5 :
+                activeIndex === 1 ? 2 :
+                    activeIndex === 3 ? -2 :
+                        activeIndex === tabOrder.length - 1 ? -5 : 0
+        );
+
+        Animated.spring(svgTranslate, {
+            toValue: target,
+            friction: 5,
+            tension: 50,
+            useNativeDriver: true,
+        }).start();
+    }, [activeIndex, svgTranslate]);
+
+    const getIconSource = (name: string, isFocused: boolean) => {
+        switch (name) {
+            case "Home":
+                return isFocused
+                    ? require("../../assets/images/homeFocused.png")
+                    : require("../../assets/images/home.png");
+            case "Extras":
+                return isFocused
+                    ? require("../../assets/images/extraFocused.png")
+                    : require("../../assets/images/extra.png");
+            case "Profile":
+                return isFocused
+                    ? require("../../assets/images/profileFocused.png")
+                    : require("../../assets/images/profile.png");
+            case "Settings":
+                return isFocused
+                    ? require("../../assets/images/settingsFocused.png")
+                    : require("../../assets/images/settings.png");
+            case "Payment":
+                return isFocused
+                    ? require("../../assets/images/walletFocused.png")
+                    : require("../../assets/images/wallet.png");
+            default:
+                return require("../../assets/images/home.png");
+        }
+    };
+
+    return (
+        <View className="absolute left-0 right-0 bottom-0 h-24 items-center justify-center" style={styles.container}>{/* SVG (render first so it's behind icons). pointerEvents none so it doesn't capture touches */}
+            <Animated.View
+                pointerEvents="none"
+                className="absolute items-center justify-center"
+                style={[
+                    {
+                        left: initialLeft,
+                        width: LOGO_WIDTH,
+                        height: LOGO_HEIGHT
+                    },
+                    {
+                        transform: [{ translateX: svgTranslate }],
+                        zIndex: 0,
+                        elevation: 0,
+                    },
+
+                ]}
+            >
+                <CenterLogo width={LOGO_WIDTH} height={LOGO_HEIGHT} />
+            </Animated.View>
+
+            {/* Icons row — on top of SVG */}
+            <View className="flex-row w-full px-2 pb-6" style={{ zIndex: 10 }}>
+                {tabOrder.map((name, index) => {
+                    const isFocused = state.index === index;
+                    const route = state.routes.find((r) => r.name === name);
+                    const key = route?.key;
+
+                    const onPress = () => {
+                        if (!isFocused && key) {
+                            const event = navigation.emit({
+                                type: "tabPress",
+                                target: key,
+                                canPreventDefault: true,
+                            });
+                            if (!event.defaultPrevented) {
+                                navigation.navigate(name);
+                            }
+                        }
+                    };
+
+                    const animatedStyle = {
+                        transform: [{ translateY: animatedValues[index] }],
+                        zIndex: 20,
+                        elevation: 20,
+                    };
+
+                    return (
+                        <TouchableOpacity
+                            key={name}
+                            onPress={onPress}
+                            activeOpacity={1}
+                            className="flex-1 items-center justify-center"
+                            style={{ width: TAB_WIDTH }}
+                        >
+                            <Animated.View style={[animatedStyle, styles.iconWrapper]}>
+                                <View
+                                    // active is transparent; unfocused has white circular background
+                                    className={`items-center justify-center`}
+                                    style={[
+                                        styles.iconCircle,
+                                        { backgroundColor: isFocused ? "#ff5821" : 'transparent' },
+                                    ]}
+                                >
+                                    <Image
+                                        source={getIconSource(name, isFocused)}
+                                        style={[styles.iconImage, { tintColor: isFocused ? "white" : "#9ca3af" }]}
+                                        resizeMode="contain"
+                                    />
+                                </View>
+                            </Animated.View>
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: "transparent",
+    },
+    iconWrapper: {
+        width: 64,
+        height: 64,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    iconCircle: {
+        width: 58,
+        height: 58,
+        borderRadius: 28,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.12,
+        shadowRadius: 10,
+        elevation: 8,
+    },
+    iconImage: {
+        width: 26,
+        height: 26,
+    },
+});
