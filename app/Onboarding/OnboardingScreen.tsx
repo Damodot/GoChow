@@ -31,6 +31,8 @@ const slides = [
 ];
 
 export default function OnboardingScreen() {
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
     const colors = useTheme();
 
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -146,7 +148,11 @@ export default function OnboardingScreen() {
                                 {/* Onboarding image - bigger */}
                                 <Image
                                     source={item.image}
-                                    className="w-72 h-72 mb-8"
+                                    style={{
+                                        width: Math.min(300, width * 0.7),
+                                        height: Math.min(300, width * 0.7),
+                                        marginBottom: 32,
+                                    }}
                                     resizeMode="contain"
                                 />
 
@@ -156,7 +162,11 @@ export default function OnboardingScreen() {
                                 </Typography>
 
                                 {/* Description */}
-                                <Typography variant="body" style={{ color: colors.subText }} className="text-center leading-6 px-6">
+                                <Typography
+                                    variant="body"
+                                    style={{ color: colors.subText }}
+                                    className="text-center leading-6 px-4"
+                                >
                                     {item.description}
                                 </Typography>
                             </View>
@@ -165,12 +175,22 @@ export default function OnboardingScreen() {
 
                     {renderDots()}
 
-                    <View className="mb-8 w-[85%] m-auto">
-                        <Button
-                            title={currentIndex === slides.length - 1 ? "Get Started" : "Next"}
-                            onPress={handleNext}
-                            style={{ backgroundColor: colors.btnBg }}
-                        />
+                    {/* Responsive Button Container */}
+                    <View className="mb-8 w-full items-center">
+                        <View
+                            style={{
+                                width: '85%',
+                                maxWidth: MAX_BUTTON_WIDTH,
+                                alignSelf: 'center',
+                                margin: 'auto'
+                            }}
+                        >
+                            <Button
+                                title={currentIndex === slides.length - 1 ? "Get Started" : "Next"}
+                                onPress={handleNext}
+                                style={{ backgroundColor: colors.btnBg }}
+                            />
+                        </View>
                     </View>
                 </View>
             </SafeAreaView>

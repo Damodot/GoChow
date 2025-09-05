@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
-import { Image, StatusBar, View } from "react-native";
+import { Dimensions, Image, StatusBar, View } from "react-native";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -13,6 +13,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function SuccessScreen() {
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
     const colors = useTheme();
 
     // Shared values
@@ -54,7 +56,13 @@ export default function SuccessScreen() {
     return (
         <View
             className="flex-1 items-center justify-center px-6"
-            style={{ backgroundColor: colors.bg }}
+            style={{
+                flex: 1,
+                backgroundColor: colors.bg,
+                width: '100%',
+                maxWidth: MAX_BUTTON_WIDTH,
+                alignSelf: 'center',
+            }}
         >
             <StatusBar
                 barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}

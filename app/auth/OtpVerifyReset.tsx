@@ -2,18 +2,23 @@ import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
+    Dimensions,
     Easing,
     SafeAreaView,
     StatusBar,
     TextInput,
+    TouchableOpacity,
     View,
 } from "react-native";
 import CustomModal from "../../components/CustomModal";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
+import Loader from "../../components/ui/Loader";
 import { useTheme } from "../../hooks/useTheme";
 
 export default function OTPVerifyReset() {
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
     const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -23,6 +28,8 @@ export default function OTPVerifyReset() {
     const [timer, setTimer] = useState(60);
     const inputs = useRef<Array<TextInput | null>>([]);
     const [errorVisible, setErrorVisible] = useState(false);
+    const [counting, setCounting] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // Animation on mount
     useEffect(() => {
@@ -44,7 +51,10 @@ export default function OTPVerifyReset() {
 
     // Countdown for resend code
     useEffect(() => {
-        if (timer === 0) return;
+        if (timer === 0) {
+            setCounting(false);
+            return
+        };
         const interval = setInterval(() => {
             setTimer((prev) => prev - 1);
         }, 1000);
@@ -70,10 +80,16 @@ export default function OTPVerifyReset() {
             // Auto-submit when all 4 digits are filled
             const code = newOtp.join("");
             const correctCode = '1234';
-            if (code.length === 4 && code === correctCode) {
-                router.push('/auth/CreateNewPassword');
-            } else if (code.length === 4) {
-                setErrorVisible(true);
+            if (code.length === 4) {
+                setLoading(true);
+                if (code === correctCode) {
+                    setTimeout(() => {
+                        setLoading(false);
+                        router.replace('/auth/CreateNewPassword');
+                    }, 1500);
+                } else if (code.length === 4) {
+                    setErrorVisible(true);
+                }
             }
         }
     };
@@ -89,7 +105,15 @@ export default function OTPVerifyReset() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: colors.bg,
+                width: '100%',
+                maxWidth: MAX_BUTTON_WIDTH,
+                alignSelf: 'center',
+            }}
+        >
             <StatusBar
                 barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
                 backgroundColor={colors.bg}
@@ -148,18 +172,48 @@ export default function OTPVerifyReset() {
 
                     {/* Confirm Button */}
                     <Button
-                        title="Confirm"
+                        title={loading ? "" : "Confirm"}
                         onPress={handleConfirm}
-                        style={{ backgroundColor: colors.btnBg }}
+                        style={{
+                            backgroundColor: colors.btnBg,
+                            opacity: loading ? 0.8 : 1,
+                            marginBottom: 25
+                        }}
+                        loading={loading}
+                        ActivityIndicatorComponent={
+                            <Loader />
+                        }
+                        disabled={loading}
                     />
 
                     {/* Resend Link */}
-                    <Typography variant="body" style={{ color: colors.subText }} className="text-center mt-6">
-                        Didn't receive an email?{" "}
-                        <Typography variant="bodyBold" className="text-red-600">
-                            Resend Code
-                        </Typography>
-                    </Typography>
+                    <View className="flex items-center justify-center">
+                        <View className="flex-row items-center">
+                            <Typography variant="body" style={{ color: colors.subText }} className="text-center">
+                                Didn't receive an email?{" "}
+                            </Typography>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (!counting) {
+                                        setTimer(60);
+                                        setCounting(true);
+                                    }
+                                }}
+                                disabled={counting}
+                                activeOpacity={counting ? 1 : 0.7}
+                            >
+                                <Typography
+                                    variant="bodyBold"
+                                    className={`text-center ${counting
+                                        ? 'text-gray-400'
+                                        : 'text-red-600'
+                                        } ${counting ? 'opacity-60' : 'opacity-100'}`}
+                                >
+                                    Resend Code
+                                </Typography>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
             </Animated.ScrollView>
             <CustomModal

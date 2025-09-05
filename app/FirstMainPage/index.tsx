@@ -41,6 +41,10 @@ export default function LoadedScreen() {
 
     const { width, height } = Dimensions.get("window");
 
+    // 🔹 Define max width for buttons (ideal for tablets)
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
+
     return (
         <View className="flex-1" style={{ backgroundColor: colors.bg }}>
             <StatusBar
@@ -49,7 +53,7 @@ export default function LoadedScreen() {
                 translucent
             />
 
-            {/* Image layer on top of the solid background */}
+            {/* Background Image */}
             <View
                 style={{
                     position: "absolute",
@@ -67,7 +71,7 @@ export default function LoadedScreen() {
             </View>
 
             {/* Content Layer */}
-            <View className="absolute top-0 left-0 right-0 bottom-0 justify-center items-center">
+            <View className="absolute top-0 left-0 right-0 bottom-0 justify-center items-center px-6">
                 {/* Logo */}
                 <Image
                     source={require("../../assets/images/goChowLogo.png")}
@@ -77,29 +81,38 @@ export default function LoadedScreen() {
                 <Typography variant="h3" style={{ color: colors.text }} className="mt-2 mb-6">
                     Food Delivery
                 </Typography>
+
+                {/* Animated Buttons Container */}
                 <Animated.View
                     style={{
                         opacity: fadeAnim,
                         transform: [{ translateY: slideAnim }],
+                        width: "100%",
+                        maxWidth: MAX_BUTTON_WIDTH,
+                        alignSelf: "center",
                     }}
                     className="items-center w-full absolute bottom-20"
                 >
+                    {/* Login Button */}
                     <Button
                         title="Login"
                         onPress={() => router.push("/auth/Login")}
-                        style={{ 
-                            width: "85%", 
+                        style={{
+                            width: "100%",
                             marginBottom: 15,
-                            backgroundColor: colors.btnBg 
+                            backgroundColor: colors.btnBg,
+                            borderRadius: 999,
                         }}
                     />
 
+                    {/* Sign Up Button (Outline) */}
                     <TouchableOpacity
-                        className="w-[85%] py-5 rounded-full"
+                        className="w-full py-5 rounded-full"
                         style={{
                             borderWidth: 1,
                             borderColor: colors.outline,
                             backgroundColor: colors.bg,
+                            borderRadius: 999,
                         }}
                         onPress={() => router.push("/auth/Signup")}
                     >

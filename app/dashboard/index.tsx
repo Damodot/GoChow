@@ -71,9 +71,9 @@ export default function Dashboard() {
 }
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
+    const colors = useTheme();
     const activeIndex = state.index;
 
-    // Icon lift animations (native Animated API)
     const animatedValues = useRef(tabOrder.map(() => new Animated.Value(0))).current;
 
     useEffect(() => {
@@ -198,12 +198,12 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                                     className={`items-center justify-center`}
                                     style={[
                                         styles.iconCircle,
-                                        { backgroundColor: isFocused ? "#ff5821" : 'transparent' },
+                                        { backgroundColor: isFocused ? colors.isFocusedIcon : 'transparent' },
                                     ]}
                                 >
                                     <Image
                                         source={getIconSource(name, isFocused)}
-                                        style={[styles.iconImage, { tintColor: isFocused ? "white" : "#9ca3af" }]}
+                                        style={[styles.iconImage, { tintColor: isFocused ? "white" : colors.brand }]}
                                         resizeMode="contain"
                                     />
                                 </View>

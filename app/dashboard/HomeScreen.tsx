@@ -4,6 +4,7 @@ import { Typography } from "@/components/Typography";
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useTheme } from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
     Dimensions,
@@ -45,6 +46,38 @@ const popular = [
     },
 ];
 
+let selectedFoodObj = {
+    image: 'popular.png',
+    foodName: "Rice & Chicken",
+    foodPrice: "2,500",
+    foodInfo:
+        "A delicious meal of rice served with chicken and a side of vegetables.",
+    types: {
+        baseFood: [
+            { label: "Jollof Rice", price: "₦0" },
+            { label: "Fried Rice", price: "₦0" },
+            { label: "Jollof Rice & Fried Rice", price: "₦0" },
+        ],
+        extras: [
+            { label: "Plantain", price: "₦300" },
+            { label: "Coleslaw", price: "₦500" },
+            { label: "Extra Rice", price: "₦500" },
+        ],
+        extraProtein: [
+            { label: "Chicken", price: "₦1500" },
+            { label: "Croaker Fish", price: "₦2000" },
+            { label: "Big Fish", price: "₦1000" },
+            { label: "Beef", price: "₦500" },
+        ],
+        drinks: [
+            { label: "Maltina", price: "₦800" },
+            { label: "Coca Cola", price: "₦500" },
+            { label: "Fanta", price: "₦500" },
+            { label: "Pepsi", price: "₦500" },
+        ],
+    },
+};
+
 export default function HomeScreen() {
     const [loading, setLoading] = useState(true);
     const colors = useTheme();
@@ -60,6 +93,13 @@ export default function HomeScreen() {
         return () => clearTimeout(timer);
     }, []);
 
+    const handleFoodPress = (item: {}) => {
+        router.push({
+            pathname: '/dashboard/FoodDetails',
+            params: { food: JSON.stringify(selectedFoodObj) as string }
+        });
+    }
+
     return (
         <View className="flex-1" style={{ backgroundColor: colors.dashboardbg }}>
             {/* Fixed Header Section */}
@@ -69,7 +109,9 @@ export default function HomeScreen() {
                     <Typography variant="h1" style={{ color: colors.text }}>
                         Hello, User!
                     </Typography>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => router.push('/dashboard/Cart')}
+                    >
                         <Image
                             source={require("@/assets/images/shoppingCart.png")}
                             className="w-6 h-6"
@@ -231,13 +273,13 @@ export default function HomeScreen() {
                             data={popular}
                             keyExtractor={(item) => item.id}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => alert(`You pressed: ${item.title}`)}>
+                                <TouchableOpacity onPress={() => handleFoodPress(item)}>
                                     <PopularCard item={item} />
                                 </TouchableOpacity>
                             )}
                             scrollEnabled={false}
                             showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ paddingBottom: 10 }}
+                            contentContainerStyle={{ paddingBottom: 20 }}
                         />
                     </>
                 )}

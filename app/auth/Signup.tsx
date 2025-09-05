@@ -1,11 +1,12 @@
 import CustomAlert from "@/components/CustomAlert";
+import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Easing,
-  Pressable,
   SafeAreaView,
   StatusBar,
   TextInput,
@@ -14,9 +15,12 @@ import {
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
+import Loader from "../../components/ui/Loader";
 import { useTheme } from "../../hooks/useTheme";
 
 export default function Signup() {
+  const { width: screenWidth } = Dimensions.get("window");
+  const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
   const colors = useTheme();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -51,6 +55,7 @@ export default function Signup() {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
   const [toastMsg, setToastMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const showToast = (k: typeof toastKind, m: string) => {
     setToastKind(k);
@@ -67,11 +72,24 @@ export default function Signup() {
       showToast('error', 'Passwords do not match')
       return
     }
+    setLoading(true);
     showToast('success', 'User created successfully')
+    setTimeout(() => {
+      setLoading(false);
+      router.replace('/auth/Login')
+    }, 2000);
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: colors.bg,
+        width: '100%',
+        maxWidth: MAX_BUTTON_WIDTH,
+        alignSelf: 'center',
+      }}
+    >
       <StatusBar
         barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
         backgroundColor={colors.bg}
@@ -229,28 +247,18 @@ export default function Signup() {
         </View>
 
         <View className="flex-row items-center mt-3 mb-6">
-          <Pressable
-            onPress={() => setTermsAgreement((r) => !r)}
-            className="flex-row items-center"
-          >
-            <View
-              className="w-5 h-5 rounded-full mr-2 items-center justify-center"
-              style={{
-                borderWidth: 1.5,
-                borderColor: colors.outline,
-                backgroundColor: termsAgreement ? colors.outline : "transparent",
-              }}
-            >
-              {termsAgreement ? (
-                <View className="w-2.5 h-2.5 rounded-full bg-white" />
-              ) : null}
-            </View>
-            <Typography variant="body" style={{ color: colors.text }}>
-              I agree to the
-            </Typography>
-          </Pressable>
+          <CustomCheckbox
+            bgColor={colors.brand}
+            borderColor={colors.brand}
+            value={termsAgreement}
+            onValueChange={setTermsAgreement}
+            label="I agree to the "
+          />
 
-          <TouchableOpacity onPress={() => alert("Terms of Service and Privacy Policy Pressed")}>
+          <TouchableOpacity
+            disabled={loading}
+            onPress={() => alert("Terms of Service and Privacy Policy Pressed")}
+          >
             <Typography variant="bodyBold" style={{ color: colors.outline }}>
               Terms of Service and Privacy Policy
             </Typography>
@@ -260,9 +268,17 @@ export default function Signup() {
         {/* Sign in */}
         <View>
           <Button
-            title="Sign Up"
+            title={loading ? "" : "Sign up"}
             onPress={handleSignIn}
-            style={{ backgroundColor: colors.btnBg }}
+            style={{
+              backgroundColor: colors.btnBg,
+              opacity: loading ? 0.8 : 1
+            }}
+            loading={loading}
+            ActivityIndicatorComponent={
+              <Loader />
+            }
+            disabled={loading}
           />
         </View>
 
@@ -290,7 +306,8 @@ export default function Signup() {
               borderWidth: 1,
               borderColor: colors.fieldBorder,
             }}
-            onPress={() => alert("Continue with Google")}
+            onPress={() => !loading && alert("Continue with Google")}
+            disabled={loading}
           >
             <AntDesign name="google" size={22} color={colors.outline} />
           </TouchableOpacity>
@@ -308,6 +325,7 @@ export default function Signup() {
               borderColor: colors.fieldBorder,
             }}
             onPress={() => alert("Continue with Apple")}
+            disabled={loading}
           >
             <FontAwesome name="apple" size={24} color={colors.text === "#ffffff" ? "#f3f4f6" : "#5b5b5b"} />
           </TouchableOpacity>
@@ -325,6 +343,7 @@ export default function Signup() {
               borderColor: colors.fieldBorder,
             }}
             onPress={() => alert("Continue with Facebook")}
+            disabled={loading}
           >
             <FontAwesome name="facebook" size={22} color={colors.outline} />
           </TouchableOpacity>
@@ -334,9 +353,12 @@ export default function Signup() {
         <View className="flex items-center justify-center mb-8">
           <View className="flex-row items-center">
             <Typography variant="body" style={{ color: colors.subText }} className="text-center">
-              Already have an account? 
+              Already have an account?
             </Typography>
-            <TouchableOpacity onPress={() => router.replace("/auth/Login")}>
+            <TouchableOpacity
+              onPress={() => router.replace("/auth/Login")}
+              disabled={loading}
+            >
               <Typography variant="bodyBold" className="text-red-600 text-center">
                 {' '}Sign in
               </Typography>

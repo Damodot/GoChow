@@ -3,16 +3,21 @@ import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
+    Dimensions,
     Easing,
     SafeAreaView,
     StatusBar,
     TextInput,
-    View
+    View,
 } from "react-native";
+import CustomAlert from "../../components/CustomAlert";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
+import Loader from "../../components/ui/Loader";
 
 export default function LoginScreen() {
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
     const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -37,17 +42,41 @@ export default function LoginScreen() {
 
 
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const [toastVisible, setToastVisible] = useState(false);
+    const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
+    const [toastMsg, setToastMsg] = useState('');
+
+    const showToast = (k: typeof toastKind, m: string) => {
+        setToastKind(k);
+        setToastMsg(m);
+        setToastVisible(true);
+    };
 
     const handleReset = () => {
         if (!email) {
+            showToast('error', 'Please enter a valid email.');
             return
         }
-        router.replace('/auth/OtpVerifyReset')
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            router.replace('/auth/OtpVerifyReset')
+        }, 2000);
     }
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: colors.bg,
+                width: '100%',
+                maxWidth: MAX_BUTTON_WIDTH,
+                alignSelf: 'center',
+            }}
+        >
             <StatusBar
                 barStyle={colors.text === '#ffffff' ? "light-content" : "dark-content"}
                 backgroundColor={colors.bg}
@@ -94,10 +123,27 @@ export default function LoginScreen() {
                 </View>
 
                 <Button
-                    title="Send"
+                    title={loading ? "" : "Send Reset Code"}
                     onPress={handleReset}
+                    style={{
+                        backgroundColor: colors.btnBg,
+                        opacity: loading ? 0.8 : 1
+                    }}
+                    loading={loading}
+                    ActivityIndicatorComponent={
+                        <Loader />
+                    }
+                    disabled={loading}
                 />
             </Animated.ScrollView>
+            <CustomAlert
+                visible={toastVisible}
+                type={toastKind}
+                message={toastMsg}
+                onClose={() => {
+                    setToastVisible(false);
+                }}
+            />
         </SafeAreaView>
     );
 }

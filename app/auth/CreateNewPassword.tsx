@@ -4,18 +4,22 @@ import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
+    Dimensions,
     Easing,
     SafeAreaView,
     StatusBar,
     TextInput,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 import { Typography } from "../../components/Typography";
 import Button from "../../components/ui/Button";
+import Loader from "../../components/ui/Loader";
 import { useTheme } from "../../hooks/useTheme";
 
 export default function CreateNewPassword() {
+    const { width: screenWidth } = Dimensions.get("window");
+    const MAX_BUTTON_WIDTH = screenWidth > 768 ? 500 : 450;
     const colors = useTheme();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -43,6 +47,7 @@ export default function CreateNewPassword() {
     const [remember, setRemember] = useState(true);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfPassword, setShowConfPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [toastVisible, setToastVisible] = useState(false);
     const [toastKind, setToastKind] = useState<'success' | 'error' | 'warning' | 'info'>('info');
@@ -64,15 +69,28 @@ export default function CreateNewPassword() {
             showToast('error', 'Passwords do not match');
             return;
         }
-
-        showToast('success', 'Password updated successfully');
+        setLoading(true);
+        // Simulate API call
         setTimeout(() => {
+            showToast('success', 'Password updated successfully');
+        }, 1500);
+
+        setTimeout(() => {
+            setLoading(false);
             router.replace("/auth/PasswordChangeConfirmed")
         }, 2000);
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: colors.bg,
+                width: '100%',
+                maxWidth: MAX_BUTTON_WIDTH,
+                alignSelf: 'center',
+            }}
+        >
             <StatusBar
                 barStyle={colors.text === "#ffffff" ? "light-content" : "dark-content"}
                 backgroundColor={colors.bg}
@@ -170,6 +188,19 @@ export default function CreateNewPassword() {
                         title="Next"
                         onPress={handleCreatePassword}
                         style={{ backgroundColor: colors.btnBg }}
+                    />
+                    <Button
+                        title={loading ? "" : "Next"}
+                        onPress={handleCreatePassword}
+                        style={{
+                            backgroundColor: colors.btnBg,
+                            opacity: loading ? 0.8 : 1
+                        }}
+                        loading={loading}
+                        ActivityIndicatorComponent={
+                            <Loader />
+                        }
+                        disabled={loading}
                     />
                 </View>
             </Animated.ScrollView>

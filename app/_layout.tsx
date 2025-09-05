@@ -27,6 +27,8 @@ export default function RootLayout() {
           <Stack.Screen name="dashboard/PaymentScreen" />
           <Stack.Screen name="dashboard/ProfileScreen" />
           <Stack.Screen name="dashboard/SettingsScreen" />
+          <Stack.Screen name="dashboard/FoodDetails" />
+          <Stack.Screen name="dashboard/Cart" />
           <Stack.Screen name="Onboarding/OnboardingScreen" />
         </Stack>
       </FontProvider>

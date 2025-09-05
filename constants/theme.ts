@@ -20,6 +20,7 @@ interface ThemeColors {
 // Create theme object with proper typing
 const theme = {
     light: {
+        brand: "#004aa9",
         bg: "#ffffff",
         dashboardbg: "#ffffff",
         text: "#111827",
@@ -33,10 +34,12 @@ const theme = {
         tabBg: "#ededed",
         tabIconColor: "#6b7280",
         activeTabColor: "#004aa9",
-        skeletonHighlight: '#ffffff30'
+        skeletonHighlight: '#ffffff30',
+        isFocusedIcon: '#ff5821'
     } as const,
 
     dark: {
+        brand: "#004aa9",
         bg: "#000017",
         dashboardbg: "#1e2f40",
         text: "#ffffff",
@@ -50,7 +53,8 @@ const theme = {
         tabBg: "#18202c",
         tabIconColor: "#9ca3af",
         activeTabColor: "#60A5FA",
-        skeletonHighlight: '#ffffff30'
+        skeletonHighlight: '#ffffff30',
+        isFocusedIcon: '#ff5821'
     } as const,
 } as const;
 
